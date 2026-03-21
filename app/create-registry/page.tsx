@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -27,6 +27,14 @@ const occasionImages: Record<OccasionType, string> = {
 };
 
 export default function CreateRegistryPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-ivory flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-royal" /></div>}>
+      <CreateRegistryInner />
+    </Suspense>
+  );
+}
+
+function CreateRegistryInner() {
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();

@@ -22,6 +22,7 @@ const occasionImages: Record<OccasionType, string> = {
   baby_shower: "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=400&fit=crop",
   housewarming: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=400&fit=crop",
   birthday: "https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=600&h=400&fit=crop",
+  anniversary: "https://images.unsplash.com/photo-1529636798458-92182e662485?w=600&h=400&fit=crop",
   other: "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=600&h=400&fit=crop",
 };
 
@@ -84,7 +85,7 @@ export default function CreateRegistryPage() {
     }
   };
 
-  const occasions: OccasionType[] = ["wedding", "baby_shower", "housewarming", "birthday", "other"];
+  const occasions: OccasionType[] = ["wedding", "baby_shower", "housewarming", "birthday", "anniversary", "other"];
 
   if (authLoading) {
     return (

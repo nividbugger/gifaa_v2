@@ -1,6 +1,6 @@
 // Occasion-driven template configuration for registries
 
-export type OccasionType = "wedding" | "baby_shower" | "housewarming" | "birthday" | "other";
+export type OccasionType = "wedding" | "baby_shower" | "housewarming" | "birthday" | "anniversary" | "other";
 
 export interface CashFundTemplate {
   name: string;
@@ -64,6 +64,17 @@ export const occasionTemplates: Record<OccasionType, OccasionTemplate> = {
       { name: "Hobby Fund", description: "Contribute to my favorite hobbies and interests" },
     ],
   },
+  anniversary: {
+    title: "Anniversary Registry",
+    titlePlaceholder: "Our Anniversary Registry",
+    headerImage: "https://images.unsplash.com/photo-1529636798458-92182e662485?w=1200&h=600&fit=crop",
+    personalMessage: "Celebrating another beautiful year together! Thank you for sharing in our joy.",
+    thankYouNote: "Thank you for celebrating this milestone with us. Your gift means so much!",
+    cashFunds: [
+      { name: "Celebration Fund", description: "Help us celebrate this special milestone" },
+      { name: "Travel Fund", description: "Contribute to our anniversary getaway" },
+    ],
+  },
   other: {
     title: "Gift Registry",
     titlePlaceholder: "My Gift Registry",
@@ -81,6 +92,7 @@ export const occasionLabels: Record<OccasionType, string> = {
   baby_shower: "Baby Shower",
   housewarming: "House Warming",
   birthday: "Birthday",
+  anniversary: "Anniversary",
   other: "Other",
 };
 
@@ -89,5 +101,6 @@ export const occasionIcons: Record<OccasionType, string> = {
   baby_shower: "👶",
   housewarming: "🏠",
   birthday: "🎂",
+  anniversary: "💍",
   other: "🎁",
 };

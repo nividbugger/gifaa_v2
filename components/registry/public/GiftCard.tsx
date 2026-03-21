@@ -90,7 +90,7 @@ export default function GiftCard({ gift, onGiftClick }: GiftCardProps) {
       <div className="relative aspect-square bg-gradient-to-br from-ivory to-ivory-warm overflow-hidden">
         {showImage ? (
           <img
-            src={gift.product_image_url}
+            src={gift.product_image_url ?? undefined}
             alt={displayName}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             onError={() => {

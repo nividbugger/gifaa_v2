@@ -1,8 +1,11 @@
 import { createBrowserClient } from "@supabase/ssr";
 import type { Database } from "./types";
 
+// Strip __InternalSupabase for compatibility with @supabase/ssr
+type AppDatabase = Omit<Database, "__InternalSupabase">;
+
 export function createClient() {
-  return createBrowserClient<Database>(
+  return createBrowserClient<AppDatabase>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );

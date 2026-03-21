@@ -14,26 +14,15 @@ export async function GET(request: Request) {
       // Auto-claim any pending migration registries for this user
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const avatar = user.user_metadata?.avatar_url as string | undefined;
-        const name   = (user.user_metadata?.full_name ?? user.user_metadata?.name) as string | undefined;
+        const avatar = (user.user_metadata?.avatar_url ?? null) as string | null;
+        const name   = (user.user_metadata?.full_name ?? user.user_metadata?.name ?? null) as string | null;
 
-        // Claim by avatar_url (primary — unique per Google account)
-        if (avatar) {
-          await supabase
-            .from("registries")
-            .update({ user_id: user.id, pending_claim_avatar: null, pending_claim_name: null })
-            .eq("pending_claim_avatar", avatar)
-            .is("user_id", null);
-        }
-
-        // Claim by display name (fallback for users without avatar)
-        if (name) {
-          await supabase
-            .from("registries")
-            .update({ user_id: user.id, pending_claim_avatar: null, pending_claim_name: null })
-            .eq("pending_claim_name", name)
-            .is("user_id", null);
-        }
+        // Use a SECURITY DEFINER function so it runs as DB owner, bypassing RLS
+        // (pending rows have user_id = NULL which would fail normal RLS UPDATE checks)
+        await supabase.rpc("claim_pending_registries", {
+          p_avatar: avatar,
+          p_name: name,
+        });
       }
 
       return NextResponse.redirect(`${origin}${next}`);

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useAutoScroll } from "@/hooks/useAutoScroll";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -32,12 +33,18 @@ const occasions = [
 ];
 
 const OccasionsSection = () => {
+  const router = useRouter();
   const isMobile = useIsMobile();
   const { scrollRef, handleTouchStart, handleTouchEnd } = useAutoScroll<HTMLDivElement>({
     interval: 3500,
     scrollAmount: 280,
     enabled: isMobile,
   });
+
+  const handleOccasionClick = (id: string) => {
+    const occasionParam = id.replace("-", "_");
+    router.push(`/create-registry?occasion=${occasionParam}`);
+  };
 
   return (
     <section id="occasions" className="py-20 md:py-24 bg-ivory-warm">
@@ -63,9 +70,10 @@ const OccasionsSection = () => {
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {occasions.map((occasion, index) => (
-            <div
+            <button
               key={occasion.id}
-              className="flex-shrink-0 w-[260px] snap-center animate-fade-up"
+              onClick={() => handleOccasionClick(occasion.id)}
+              className="flex-shrink-0 w-[260px] snap-center animate-fade-up text-left"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="relative h-[340px] rounded-2xl overflow-hidden group cursor-pointer shadow-soft hover:shadow-elevated transition-all">
@@ -82,16 +90,17 @@ const OccasionsSection = () => {
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gold to-gold-light transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
               </div>
-            </div>
+            </button>
           ))}
         </div>
 
         {/* Desktop: Grid */}
         <div className="hidden md:grid grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
           {occasions.map((occasion, index) => (
-            <div
+            <button
               key={occasion.id}
-              className="animate-fade-up"
+              onClick={() => handleOccasionClick(occasion.id)}
+              className="animate-fade-up text-left"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="relative h-[300px] lg:h-[360px] rounded-2xl overflow-hidden group cursor-pointer shadow-soft hover:shadow-elevated hover:-translate-y-1 transition-all duration-300">
@@ -108,7 +117,7 @@ const OccasionsSection = () => {
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gold to-gold-light transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Gift, Check, User, ExternalLink, ShoppingBag } from "lucide-react";
+import { Gift, Check, ExternalLink, ShoppingBag, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Database } from "@/lib/supabase/types";
 
@@ -12,171 +12,158 @@ interface GiftCardProps {
   onGiftClick: (gift: GiftItem) => void;
 }
 
-// Extract product name from URL as fallback
 function extractNameFromUrl(url: string): string {
   try {
     const urlObj = new URL(url);
     const pathname = urlObj.pathname;
-    
-    // Get all path segments
-    let segments = pathname.split('/').filter(Boolean);
-    
-    // For Amazon: get text before /dp/
-    const dpIndex = segments.findIndex(s => s.toLowerCase() === 'dp');
-    if (dpIndex > 0) {
-      segments = segments.slice(0, dpIndex);
-    }
-    
-    // For Flipkart: remove /p/ segments  
-    segments = segments.filter(s => s.toLowerCase() !== 'p');
-    
-    // Get the last meaningful segment
-    let name = segments.pop() || '';
-    
-    // Clean up the name
-    name = name
-      .replace(/[-_]/g, ' ')
-      .replace(/\s+/g, ' ')
-      .replace(/\.(html|php|aspx?)$/i, '')
-      .trim();
-    
-    if (name.length < 3) return 'Gift Item';
-    
-    // Capitalize first letter of each word
-    return name
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ')
-      .slice(0, 60);
+    let segments = pathname.split("/").filter(Boolean);
+    const dpIndex = segments.findIndex((s) => s.toLowerCase() === "dp");
+    if (dpIndex > 0) segments = segments.slice(0, dpIndex);
+    segments = segments.filter((s) => s.toLowerCase() !== "p");
+    let name = segments.pop() || "";
+    name = name.replace(/[-_]/g, " ").replace(/\s+/g, " ").replace(/\.(html|php|aspx?)$/i, "").trim();
+    if (name.length < 3) return "Gift Item";
+    return name.split(" ").map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ").slice(0, 60);
   } catch {
-    return 'Gift Item';
+    return "Gift Item";
   }
 }
 
+const CORNER_ORNAMENT = "❋";
+
 export default function GiftCard({ gift, onGiftClick }: GiftCardProps) {
   const [imageError, setImageError] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   const formatPrice = (price: number | null) => {
     if (!price) return null;
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(price);
+    return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(price);
   };
 
-  // Use product name or extract from URL
-  const displayName = gift.product_name || 
-    (gift.product_url ? extractNameFromUrl(gift.product_url) : 'Gift Item');
+  const displayName = gift.product_name || (gift.product_url ? extractNameFromUrl(gift.product_url) : "Gift Item");
+  const showImage = gift.product_image_url && !imageError;
 
   const handleViewProduct = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (gift.product_url) {
-      window.open(gift.product_url, "_blank", "noopener,noreferrer");
-    }
+    if (gift.product_url) window.open(gift.product_url, "_blank", "noopener,noreferrer");
   };
 
-  const showImage = gift.product_image_url && !imageError;
-
   return (
-    <div
-      className={`group bg-white rounded-2xl border overflow-hidden transition-all duration-300 ${
-        gift.is_purchased 
-          ? "border-charcoal/10 opacity-70" 
-          : "border-gold/20 hover:shadow-elevated hover:border-gold/40 hover:-translate-y-1"
-      }`}
+    <div className={`group relative bg-white overflow-hidden transition-all duration-300 ${
+      gift.is_purchased
+        ? "opacity-75 shadow-none"
+        : "hover:-translate-y-1.5 hover:shadow-[0_8px_30px_-4px_hsl(37_42%_54%_/_0.25)]"
+    }`}
+    style={{ borderRadius: "1px", boxShadow: gift.is_purchased ? "none" : "0 2px 12px -2px hsl(213 52% 24% / 0.08)" }}
     >
-      {/* Gift Image */}
-      <div className="relative aspect-square bg-gradient-to-br from-ivory to-ivory-warm overflow-hidden">
+      {/* Ornate corner accents */}
+      {!gift.is_purchased && (
+        <>
+          <span className="absolute top-1.5 left-1.5 text-gold/40 text-xs leading-none z-10 group-hover:text-gold/70 transition-colors">{CORNER_ORNAMENT}</span>
+          <span className="absolute top-1.5 right-1.5 text-gold/40 text-xs leading-none z-10 group-hover:text-gold/70 transition-colors">{CORNER_ORNAMENT}</span>
+          <span className="absolute bottom-1.5 left-1.5 text-gold/40 text-xs leading-none z-10 group-hover:text-gold/70 transition-colors">{CORNER_ORNAMENT}</span>
+          <span className="absolute bottom-1.5 right-1.5 text-gold/40 text-xs leading-none z-10 group-hover:text-gold/70 transition-colors">{CORNER_ORNAMENT}</span>
+        </>
+      )}
+
+      {/* Top gold border line */}
+      {!gift.is_purchased && (
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-gold/60 to-transparent z-10" />
+      )}
+
+      {/* Image Area */}
+      <div className="relative overflow-hidden" style={{ aspectRatio: "4/3" }}>
         {showImage ? (
           <img
             src={gift.product_image_url ?? undefined}
             alt={displayName}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            onError={() => {
-              console.debug("[GiftCard] Image failed to load:", gift.product_image_url);
-              setImageError(true);
-            }}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            onError={() => setImageError(true)}
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-20 h-20 rounded-full bg-gold/10 flex items-center justify-center">
-              <Gift className="w-10 h-10 text-gold" />
-            </div>
-          </div>
-        )}
-        
-        {/* Purchased Overlay */}
-        {gift.is_purchased && (
-          <div className="absolute inset-0 bg-charcoal/60 flex items-center justify-center backdrop-blur-sm">
-            <div className="bg-white rounded-full p-4 shadow-elevated animate-scale-in">
-              <Check className="w-8 h-8 text-success" />
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-ivory via-ivory-warm to-gold/5">
+            {/* Decorative mandala placeholder */}
+            <div className="relative flex items-center justify-center">
+              <div className="absolute w-20 h-20 rounded-full border border-gold/20 animate-pulse" />
+              <div className="absolute w-14 h-14 rounded-full border border-gold/15" />
+              <Gift className="w-8 h-8 text-gold/50 relative z-10" />
             </div>
           </div>
         )}
 
-        {/* Price Badge */}
+        {/* Purchased overlay */}
+        {gift.is_purchased && (
+          <div className="absolute inset-0 bg-royal/70 flex flex-col items-center justify-center backdrop-blur-[2px]">
+            <div className="bg-white/95 rounded-full p-3 shadow-lg mb-2">
+              <Check className="w-6 h-6 text-emerald-600" />
+            </div>
+            <span className="text-white/90 text-xs font-medium tracking-wide">Gifted with Love ♥</span>
+          </div>
+        )}
+
+        {/* Wishlist heart (top left) */}
+        {!gift.is_purchased && (
+          <button
+            className="absolute top-2.5 left-2.5 z-20 w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110"
+            onClick={(e) => { e.stopPropagation(); setIsWishlisted(!isWishlisted); }}
+          >
+            <Heart className={`w-3.5 h-3.5 transition-colors ${isWishlisted ? "fill-red-400 text-red-400" : "text-charcoal/40"}`} />
+          </button>
+        )}
+
+        {/* Price badge */}
         {gift.price && !gift.is_purchased && (
-          <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-soft">
-            <span className="text-royal font-semibold text-sm">
-              {formatPrice(gift.price)}
-            </span>
+          <div className="absolute bottom-2.5 right-2.5 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-full shadow-soft border border-gold/20">
+            <span className="text-royal font-bold text-xs">{formatPrice(gift.price)}</span>
           </div>
         )}
       </div>
 
-      {/* Gift Details */}
-      <div className="p-5">
-        <h3 className="font-semibold text-charcoal mb-2 line-clamp-2 min-h-[2.5rem]">
+      {/* Decorative divider */}
+      {!gift.is_purchased && (
+        <div className="flex items-center gap-1.5 px-4 py-1.5">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-gold/20" />
+          <span className="text-gold/30 text-[8px]">✦</span>
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-gold/20" />
+        </div>
+      )}
+
+      {/* Content */}
+      <div className={`px-4 pb-4 ${gift.is_purchased ? "pt-3" : "pt-0"}`}>
+        <h3 className="font-semibold text-charcoal text-sm leading-snug line-clamp-2 mb-3 min-h-[2.5rem]">
           {displayName}
         </h3>
-        
-        {gift.notes && !gift.is_purchased && (
-          <p className="text-sm text-charcoal-light mb-3 line-clamp-2">
-            {gift.notes}
-          </p>
-        )}
-        
-        {gift.is_purchased && gift.purchased_by_name && (
-          <div className="flex items-center gap-2 text-sm text-success mb-3">
-            <User className="w-4 h-4" />
-            <span>Gifted by {gift.purchased_by_name}</span>
+
+        {gift.is_purchased ? (
+          <div className="space-y-1">
+            {gift.purchased_by_name && (
+              <p className="text-xs text-charcoal-light text-center">
+                <span className="text-gold font-medium">{gift.purchased_by_name}</span>
+                {" "}is gifting this 🎁
+              </p>
+            )}
+            {gift.price && (
+              <p className="text-xs text-charcoal/40 text-center">{formatPrice(gift.price)}</p>
+            )}
           </div>
-        )}
-        
-        {!gift.is_purchased && (
+        ) : (
           <div className="flex flex-col gap-2">
-            {/* View Product Button */}
             {gift.product_url && (
-              <Button 
-                variant="gold-outline" 
-                className="w-full"
-                onClick={handleViewProduct}
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                View Product
+              <Button variant="ghost" size="sm" className="w-full h-8 text-xs text-charcoal-light border border-gold/20 hover:border-gold/40 hover:bg-gold/5 rounded-full" onClick={handleViewProduct}>
+                <ExternalLink className="w-3 h-3 mr-1.5" />
+                View Item
               </Button>
             )}
-            
-            {/* Gift This Item Button */}
-            <Button 
-              variant="royal" 
-              className="w-full group/btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                onGiftClick(gift);
-              }}
+            <Button
+              variant="royal"
+              size="sm"
+              className="w-full h-9 text-xs rounded-full font-medium tracking-wide"
+              onClick={(e) => { e.stopPropagation(); onGiftClick(gift); }}
             >
-              <ShoppingBag className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
-              Gift This Item
+              <ShoppingBag className="w-3.5 h-3.5 mr-1.5" />
+              Gift This ✦
             </Button>
           </div>
-        )}
-
-        {gift.is_purchased && gift.price && (
-          <p className="text-center text-charcoal-light text-sm">
-            {formatPrice(gift.price)}
-          </p>
         )}
       </div>
     </div>

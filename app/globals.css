@@ -248,6 +248,22 @@
     }
   }
 
+  /* Scroll reveal */
+  .reveal-section {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal-section.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-section.delay-100 { transition-delay: 0.1s; }
+  .reveal-section.delay-200 { transition-delay: 0.2s; }
+  .reveal-section.delay-300 { transition-delay: 0.3s; }
+
   /* Hide scrollbar for horizontal scroll carousels */
   .scrollbar-hide {
     -ms-overflow-style: none;

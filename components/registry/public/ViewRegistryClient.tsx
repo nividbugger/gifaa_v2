@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-import { Loader2, Gift, MapPin, Copy, Check, MessageSquare, Search } from "lucide-react";
+import { Gift, MapPin, Copy, Check, MessageSquare, Search, Trophy, Sparkles, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -240,32 +240,95 @@ export default function ViewRegistryClient({
         />
 
         <div className="container mx-auto max-w-6xl px-4 md:px-6 py-8 md:py-12">
-          {gifts.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-6 mb-8 py-4">
-              <div className="text-center">
-                <p className="text-3xl font-serif font-bold text-royal">{gifts.length}</p>
-                <p className="text-sm text-charcoal-light">Total Gifts</p>
+        {gifts.length > 0 && (
+          <>
+            {/* Progress Gamification Bar */}
+            <div className="bg-white rounded-2xl border border-gold/20 p-6 mb-8 shadow-soft">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-gold" />
+                  <span className="text-sm font-medium text-charcoal">Registry Progress</span>
+                </div>
+                <span className="text-sm font-bold text-royal">
+                  {purchasedCount}/{gifts.length} gifted
+                </span>
               </div>
-              <div className="w-px h-10 bg-gold/20 hidden sm:block" />
-              <div className="text-center">
-                <p className="text-3xl font-serif font-bold text-primary">{availableCount}</p>
-                <p className="text-sm text-charcoal-light">Available</p>
+
+              {/* Progress bar */}
+              <div className="relative h-3 bg-ivory-warm rounded-full overflow-hidden mb-3">
+                <div
+                  className="absolute inset-y-0 left-0 rounded-full transition-all duration-1000"
+                  style={{
+                    width: `${gifts.length > 0 ? (purchasedCount / gifts.length) * 100 : 0}%`,
+                    background: "linear-gradient(90deg, hsl(213 52% 24%) 0%, hsl(37 42% 54%) 100%)",
+                  }}
+                />
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
               </div>
-              <div className="w-px h-10 bg-gold/20 hidden sm:block" />
-              <div className="text-center">
-                <p className="text-3xl font-serif font-bold text-success">{purchasedCount}</p>
-                <p className="text-sm text-charcoal-light">Purchased</p>
+
+              <div className="flex justify-between items-center">
+                <div className="flex gap-4">
+                  <span className="flex items-center gap-1.5 text-xs text-charcoal-light">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                    {purchasedCount} gifted
+                  </span>
+                  <span className="flex items-center gap-1.5 text-xs text-charcoal-light">
+                    <span className="w-2 h-2 rounded-full bg-gold" />
+                    {availableCount} remaining
+                  </span>
+                </div>
+                {purchasedCount === gifts.length && gifts.length > 0 && (
+                  <span className="text-xs font-semibold text-gold flex items-center gap-1">
+                    <Trophy className="w-3.5 h-3.5" /> All gifts claimed! 🎉
+                  </span>
+                )}
+                {purchasedCount > 0 && purchasedCount < gifts.length && (
+                  <span className="text-xs text-charcoal-light">
+                    {Math.round((purchasedCount / gifts.length) * 100)}% complete
+                  </span>
+                )}
               </div>
             </div>
-          )}
+
+            {/* Hall of Fame */}
+            {purchasedCount > 0 && (
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent to-gold/30" />
+                  <div className="flex items-center gap-2 px-4">
+                    <Trophy className="w-4 h-4 text-gold" />
+                    <span className="text-sm font-serif font-semibold text-charcoal">Hall of Gifters</span>
+                    <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" />
+                  </div>
+                  <div className="flex-1 h-px bg-gradient-to-l from-transparent to-gold/30" />
+                </div>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {gifts
+                    .filter((g) => g.is_purchased && g.purchased_by_name)
+                    .map((g) => (
+                      <div key={g.id} className="flex items-center gap-2 bg-white border border-gold/20 rounded-full px-3 py-1.5 shadow-soft">
+                        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-royal to-gold flex items-center justify-center text-[10px] text-white font-bold">
+                          {g.purchased_by_name!.charAt(0).toUpperCase()}
+                        </div>
+                        <span className="text-xs font-medium text-charcoal">{g.purchased_by_name}</span>
+                        <span className="text-[10px] text-gold">✦</span>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
 
           {gifts.length > 0 && (
             <section className="mb-12">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                <h2 className="text-2xl font-serif font-bold text-royal flex items-center gap-3">
-                  <Gift className="w-6 h-6 text-gold" />
-                  Gift Ideas
-                </h2>
+                <div className="flex items-center gap-3">
+                  <span className="text-gold text-lg">❈</span>
+                  <h2 className="text-2xl font-serif font-bold text-royal">Gift Ideas</h2>
+                  <span className="text-gold text-lg">❈</span>
+                </div>
                 <div className="relative max-w-xs w-full">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal-light" />
                   <Input
@@ -273,7 +336,7 @@ export default function ViewRegistryClient({
                     placeholder="Search gifts..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 border-gold/20 focus:border-gold"
+                    className="pl-10 border-gold/20 focus:border-gold rounded-full"
                   />
                 </div>
               </div>
@@ -291,7 +354,7 @@ export default function ViewRegistryClient({
               />
 
               {filteredGifts.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                   {filteredGifts.map((gift) => (
                     <GiftCard key={gift.id} gift={gift} onGiftClick={handleGiftClick} />
                   ))}

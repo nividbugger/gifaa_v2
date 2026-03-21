@@ -96,7 +96,7 @@ function SearchContent() {
     <div className="min-h-screen bg-ivory flex flex-col">
       <Header />
 
-      <main className="flex-1 pt-24 pb-12">
+      <main className="flex-1 pb-12">
         <div className="container mx-auto max-w-4xl px-4 md:px-6">
           <div className="text-center mb-10">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gold/10 flex items-center justify-center">

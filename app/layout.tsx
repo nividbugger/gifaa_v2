@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
+import AnnouncementBanner from "@/components/layout/AnnouncementBanner";
 
 export const metadata: Metadata = {
   title: {
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <AnnouncementBanner />
         <Providers>
           {children}
         </Providers>

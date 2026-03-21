@@ -1,13 +1,41 @@
 "use client";
 
-import { ArrowRight, Search, Eye, Gift, Heart, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowRight, Search, Eye, Gift, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 
+const TYPEWRITER_TEXT =
+  "Create beautiful registries for weddings, baby showers, housewarmings, and more. No duplicates. No confusion. Just joy.";
+
+function useTypewriter(text: string, speed = 28, startDelay = 600) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    let i = 0;
+    const timeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        i++;
+        setDisplayed(text.slice(0, i));
+        if (i >= text.length) {
+          clearInterval(interval);
+          setDone(true);
+        }
+      }, speed);
+      return () => clearInterval(interval);
+    }, startDelay);
+    return () => clearTimeout(timeout);
+  }, [text, speed, startDelay]);
+
+  return { displayed, done };
+}
+
 const HeroSection = () => {
   const router = useRouter();
   const { user } = useAuth();
+  const { displayed, done } = useTypewriter(TYPEWRITER_TEXT);
 
   const handleCreateRegistry = () => {
     if (user) {
@@ -68,8 +96,10 @@ const HeroSection = () => {
             className="text-lg md:text-xl text-charcoal-light max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-up"
             style={{ animationDelay: "0.2s" }}
           >
-            Create beautiful registries for weddings, baby showers, housewarmings,
-            and more. No duplicates. No confusion. Just joy.
+            {displayed}
+            {!done && (
+              <span className="inline-block w-0.5 h-5 bg-gold ml-0.5 animate-pulse align-middle" />
+            )}
           </p>
 
           {/* CTAs */}
@@ -132,13 +162,6 @@ const HeroSection = () => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 rounded-full border-2 border-gold/30 flex items-start justify-center p-2">
-          <div className="w-1 h-2 rounded-full bg-gold" />
         </div>
       </div>
     </section>

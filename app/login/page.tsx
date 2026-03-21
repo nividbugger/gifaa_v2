@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Gift, Loader2, Mail } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import { toast } from "sonner";
 
 export default function LoginPage() {
@@ -18,12 +18,14 @@ export default function LoginPage() {
 
   const { signIn, signInWithGoogle, user, isLoading: authLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/dashboard";
 
   useEffect(() => {
     if (!authLoading && user) {
-      router.replace("/dashboard");
+      router.replace(redirectTo);
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, router, redirectTo]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +46,7 @@ export default function LoginPage() {
     }
 
     toast.success("Welcome back!");
-    router.replace("/dashboard");
+    router.replace(redirectTo);
   };
 
   const handleGoogleSignIn = async () => {
@@ -69,10 +71,8 @@ export default function LoginPage() {
     <div className="min-h-screen bg-ivory flex flex-col">
       <header className="p-6">
         <Link href="/" className="flex items-center gap-2 group w-fit">
-          <div className="w-10 h-10 rounded-lg bg-royal flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-            <Gift className="w-5 h-5 text-gold" />
-          </div>
-          <span className="text-2xl font-serif font-semibold text-royal">Gifaa</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img alt="Gifaa" className="h-11 w-auto group-hover:scale-105 transition-transform duration-300" src="/gifaa-logo.png" />
         </Link>
       </header>
 

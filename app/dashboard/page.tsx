@@ -152,7 +152,7 @@ export default function DashboardPage() {
       <PhoneNumberDialog />
       <Header />
 
-      <main className="flex-1 pt-24 pb-16">
+      <main className="flex-1 pb-16">
         <div className="container mx-auto px-6">
           <div className="mb-12">
             <h1 className="text-4xl font-serif font-bold text-royal mb-2">

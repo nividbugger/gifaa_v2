@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -29,14 +29,28 @@ const occasionImages: Record<OccasionType, string> = {
 export default function CreateRegistryPage() {
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isCreating, setIsCreating] = useState(false);
   const [selectedOccasion, setSelectedOccasion] = useState<OccasionType | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.replace("/login");
+      const occasion = searchParams.get("occasion");
+      const redirect = occasion ? `/create-registry?occasion=${occasion}` : "/create-registry";
+      router.replace(`/login?redirect=${encodeURIComponent(redirect)}`);
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, router, searchParams]);
+
+  // Auto-trigger creation when coming from landing page occasion cards
+  useEffect(() => {
+    if (!user || authLoading || isCreating) return;
+    const occasion = searchParams.get("occasion") as OccasionType | null;
+    const validOccasions: OccasionType[] = ["wedding", "baby_shower", "housewarming", "birthday", "anniversary", "other"];
+    if (occasion && validOccasions.includes(occasion)) {
+      handleOccasionSelect(occasion);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, authLoading]);
 
   const handleOccasionSelect = async (occasion: OccasionType) => {
     if (!user) {
@@ -99,7 +113,7 @@ export default function CreateRegistryPage() {
     <div className="min-h-screen bg-ivory flex flex-col">
       <Header />
 
-      <main className="flex-1 pt-24 pb-16">
+      <main className="flex-1 pb-16">
         <div className="container mx-auto px-6">
           <Button
             variant="ghost"

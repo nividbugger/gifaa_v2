@@ -8,6 +8,7 @@ import WorksWithSection from "@/components/landing/WorksWithSection";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import FAQsSection from "@/components/landing/FAQsSection";
 import Footer from "@/components/layout/Footer";
+import RevealWrapper from "@/components/layout/RevealWrapper";
 
 const homepageJsonLd = {
   "@context": "https://schema.org",
@@ -24,9 +25,7 @@ const homepageJsonLd = {
 export const metadata: Metadata = {
   title: "Gifaa – India's Premier Gift Registry Platform",
   description: "Create beautiful gift registries for weddings, baby showers, housewarmings, and more. No duplicates. No confusion. Just joy.",
-  alternates: {
-    canonical: "https://gifaa.in",
-  },
+  alternates: { canonical: "https://gifaa.in" },
   openGraph: {
     title: "Gifaa – India's Premier Gift Registry Platform",
     description: "Create beautiful gift registries for weddings, baby showers, housewarmings, and more. No duplicates. No confusion. Just joy.",
@@ -45,12 +44,24 @@ export default function HomePage() {
       <Header />
       <main>
         <HeroSection />
-        <OccasionsSection />
-        <WhyGifaaSection />
-        <HowItWorksSection />
-        <WorksWithSection />
-        <TestimonialsSection />
-        <FAQsSection />
+        <RevealWrapper delay={0}>
+          <OccasionsSection />
+        </RevealWrapper>
+        <RevealWrapper delay={0}>
+          <WhyGifaaSection />
+        </RevealWrapper>
+        <RevealWrapper delay={0}>
+          <HowItWorksSection />
+        </RevealWrapper>
+        <RevealWrapper delay={0}>
+          <WorksWithSection />
+        </RevealWrapper>
+        <RevealWrapper delay={0}>
+          <TestimonialsSection />
+        </RevealWrapper>
+        <RevealWrapper delay={0}>
+          <FAQsSection />
+        </RevealWrapper>
       </main>
       <Footer />
     </div>

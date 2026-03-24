@@ -55,31 +55,28 @@ export type Database = {
           amount: number
           cash_fund_id: string
           contributor_name: string
-          contributor_user_id: string | null
           created_at: string
           id: string
-          is_anonymous: boolean
           message: string | null
+          registry_id: string
         }
         Insert: {
           amount: number
           cash_fund_id: string
           contributor_name: string
-          contributor_user_id?: string | null
           created_at?: string
           id?: string
-          is_anonymous?: boolean
           message?: string | null
+          registry_id: string
         }
         Update: {
           amount?: number
           cash_fund_id?: string
           contributor_name?: string
-          contributor_user_id?: string | null
           created_at?: string
           id?: string
-          is_anonymous?: boolean
           message?: string | null
+          registry_id?: string
         }
         Relationships: [
           {
@@ -135,6 +132,7 @@ export type Database = {
           title: string
           updated_at: string
           upi_id: string | null
+          upi_qr_url: string | null
           user_id: string
         }
         Insert: {
@@ -153,6 +151,7 @@ export type Database = {
           title: string
           updated_at?: string
           upi_id?: string | null
+          upi_qr_url?: string | null
           user_id: string
         }
         Update: {
@@ -171,6 +170,7 @@ export type Database = {
           title?: string
           updated_at?: string
           upi_id?: string | null
+          upi_qr_url?: string | null
           user_id?: string
         }
         Relationships: []
@@ -240,6 +240,10 @@ export type Database = {
     }
     Functions: {
       can_view_registry: { Args: { registry_id: string }; Returns: boolean }
+      claim_pending_registries: {
+        Args: { p_avatar: string | null; p_name: string | null }
+        Returns: void
+      }
       get_registry_owner_from_fund: {
         Args: { fund_id: string }
         Returns: string

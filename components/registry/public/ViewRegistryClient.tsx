@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-import { Gift, MapPin, Copy, Check, MessageSquare, Search, Trophy, Sparkles, Heart } from "lucide-react";
+import { Gift, MapPin, Copy, Check, MessageSquare, Search, Trophy, Sparkles, Heart, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -59,6 +59,10 @@ export default function ViewRegistryClient({
   } | null>(null);
 
   const [copiedAddress, setCopiedAddress] = useState(false);
+
+  const hasCashFunds = cashFunds.length > 0 || !!registry.upi_id;
+  const defaultTab = gifts.length > 0 ? "gifts" : hasCashFunds ? "funds" : "gifts";
+  const [activeTab, setActiveTab] = useState<"gifts" | "funds">(defaultTab);
 
   const isOwner = user && registry && user.id === registry.user_id;
 
@@ -240,177 +244,230 @@ export default function ViewRegistryClient({
         />
 
         <div className="container mx-auto max-w-6xl px-4 md:px-6 py-8 md:py-12">
-        {gifts.length > 0 && (
-          <>
-            {/* Progress Gamification Bar */}
-            <div className="bg-white rounded-2xl border border-gold/20 p-6 mb-8 shadow-soft">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-gold" />
-                  <span className="text-sm font-medium text-charcoal">Registry Progress</span>
-                </div>
-                <span className="text-sm font-bold text-royal">
-                  {purchasedCount}/{gifts.length} gifted
-                </span>
-              </div>
 
-              {/* Progress bar */}
-              <div className="relative h-3 bg-ivory-warm rounded-full overflow-hidden mb-3">
-                <div
-                  className="absolute inset-y-0 left-0 rounded-full transition-all duration-1000"
-                  style={{
-                    width: `${gifts.length > 0 ? (purchasedCount / gifts.length) * 100 : 0}%`,
-                    background: "linear-gradient(90deg, hsl(213 52% 24%) 0%, hsl(37 42% 54%) 100%)",
-                  }}
-                />
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
-              </div>
-
-              <div className="flex justify-between items-center">
-                <div className="flex gap-4">
-                  <span className="flex items-center gap-1.5 text-xs text-charcoal-light">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                    {purchasedCount} gifted
-                  </span>
-                  <span className="flex items-center gap-1.5 text-xs text-charcoal-light">
-                    <span className="w-2 h-2 rounded-full bg-gold" />
-                    {availableCount} remaining
-                  </span>
-                </div>
-                {purchasedCount === gifts.length && gifts.length > 0 && (
-                  <span className="text-xs font-semibold text-gold flex items-center gap-1">
-                    <Trophy className="w-3.5 h-3.5" /> All gifts claimed! 🎉
-                  </span>
-                )}
-                {purchasedCount > 0 && purchasedCount < gifts.length && (
-                  <span className="text-xs text-charcoal-light">
-                    {Math.round((purchasedCount / gifts.length) * 100)}% complete
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Hall of Fame */}
-            {purchasedCount > 0 && (
-              <div className="mb-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="flex-1 h-px bg-gradient-to-r from-transparent to-gold/30" />
-                  <div className="flex items-center gap-2 px-4">
-                    <Trophy className="w-4 h-4 text-gold" />
-                    <span className="text-sm font-serif font-semibold text-charcoal">Hall of Gifters</span>
-                    <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" />
-                  </div>
-                  <div className="flex-1 h-px bg-gradient-to-l from-transparent to-gold/30" />
-                </div>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {gifts
-                    .filter((g) => g.is_purchased && g.purchased_by_name)
-                    .map((g) => (
-                      <div key={g.id} className="flex items-center gap-2 bg-white border border-gold/20 rounded-full px-3 py-1.5 shadow-soft">
-                        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-royal to-gold flex items-center justify-center text-[10px] text-white font-bold">
-                          {g.purchased_by_name!.charAt(0).toUpperCase()}
-                        </div>
-                        <span className="text-xs font-medium text-charcoal">{g.purchased_by_name}</span>
-                        <span className="text-[10px] text-gold">✦</span>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            )}
-          </>
-        )}
-
+          {/* Progress bar + Hall of Fame — always visible when gifts exist */}
           {gifts.length > 0 && (
-            <section className="mb-12">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                <div className="flex items-center gap-3">
-                  <span className="text-gold text-lg">❈</span>
-                  <h2 className="text-2xl font-serif font-bold text-royal">Gift Ideas</h2>
-                  <span className="text-gold text-lg">❈</span>
+            <>
+              <div className="bg-white rounded-2xl border border-gold/20 p-6 mb-8 shadow-soft">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-gold" />
+                    <span className="text-sm font-medium text-charcoal">Registry Progress</span>
+                  </div>
+                  <span className="text-sm font-bold text-royal">
+                    {purchasedCount}/{gifts.length} gifted
+                  </span>
                 </div>
-                <div className="relative max-w-xs w-full">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal-light" />
-                  <Input
-                    type="search"
-                    placeholder="Search gifts..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 border-gold/20 focus:border-gold rounded-full"
+                <div className="relative h-3 bg-ivory-warm rounded-full overflow-hidden mb-3">
+                  <div
+                    className="absolute inset-y-0 left-0 rounded-full transition-all duration-1000"
+                    style={{
+                      width: `${gifts.length > 0 ? (purchasedCount / gifts.length) * 100 : 0}%`,
+                      background: "linear-gradient(90deg, hsl(213 52% 24%) 0%, hsl(37 42% 54%) 100%)",
+                    }}
                   />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
                 </div>
-              </div>
-
-              <GiftFilters
-                priceRange={priceRange}
-                maxPrice={maxPrice}
-                onPriceRangeChange={setPriceRange}
-                showPurchased={showPurchased}
-                showAvailable={showAvailable}
-                onShowPurchasedChange={setShowPurchased}
-                onShowAvailableChange={setShowAvailable}
-                onClearFilters={clearFilters}
-                hasActiveFilters={hasActiveFilters}
-              />
-
-              {filteredGifts.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                  {filteredGifts.map((gift) => (
-                    <GiftCard key={gift.id} gift={gift} onGiftClick={handleGiftClick} />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12 bg-white rounded-xl border border-gold/10">
-                  <Gift className="w-12 h-12 mx-auto text-charcoal/20 mb-4" />
-                  <p className="text-charcoal-light">
-                    {hasActiveFilters
-                      ? "No gifts match your filters. Try adjusting them."
-                      : "No gifts available at the moment."}
-                  </p>
-                  {hasActiveFilters && (
-                    <Button variant="link" onClick={clearFilters} className="mt-2 text-royal">
-                      Clear all filters
-                    </Button>
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-4">
+                    <span className="flex items-center gap-1.5 text-xs text-charcoal-light">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                      {purchasedCount} gifted
+                    </span>
+                    <span className="flex items-center gap-1.5 text-xs text-charcoal-light">
+                      <span className="w-2 h-2 rounded-full bg-gold" />
+                      {availableCount} remaining
+                    </span>
+                  </div>
+                  {purchasedCount === gifts.length && gifts.length > 0 && (
+                    <span className="text-xs font-semibold text-gold flex items-center gap-1">
+                      <Trophy className="w-3.5 h-3.5" /> All gifts claimed! 🎉
+                    </span>
+                  )}
+                  {purchasedCount > 0 && purchasedCount < gifts.length && (
+                    <span className="text-xs text-charcoal-light">
+                      {Math.round((purchasedCount / gifts.length) * 100)}% complete
+                    </span>
                   )}
                 </div>
+              </div>
+
+              {purchasedCount > 0 && (
+                <div className="mb-8">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent to-gold/30" />
+                    <div className="flex items-center gap-2 px-4">
+                      <Trophy className="w-4 h-4 text-gold" />
+                      <span className="text-sm font-serif font-semibold text-charcoal">Hall of Gifters</span>
+                      <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" />
+                    </div>
+                    <div className="flex-1 h-px bg-gradient-to-l from-transparent to-gold/30" />
+                  </div>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {gifts
+                      .filter((g) => g.is_purchased && g.purchased_by_name)
+                      .map((g) => (
+                        <div key={g.id} className="flex items-center gap-2 bg-white border border-gold/20 rounded-full px-3 py-1.5 shadow-soft">
+                          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-royal to-gold flex items-center justify-center text-[10px] text-white font-bold">
+                            {g.purchased_by_name!.charAt(0).toUpperCase()}
+                          </div>
+                          <span className="text-xs font-medium text-charcoal">{g.purchased_by_name}</span>
+                          <span className="text-[10px] text-gold">✦</span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
               )}
-            </section>
+            </>
           )}
 
-          {registry.upi_id && (
+          {/* Tab bar — only show if both sections have content */}
+          {gifts.length > 0 && hasCashFunds && (
+            <div className="flex gap-2 mb-8 p-1 bg-white rounded-2xl border border-gold/20 shadow-soft w-fit">
+              <button
+                onClick={() => setActiveTab("gifts")}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  activeTab === "gifts"
+                    ? "bg-royal text-white shadow-sm"
+                    : "text-charcoal-light hover:text-charcoal"
+                }`}
+              >
+                <Gift className="w-4 h-4" />
+                Gift Ideas
+                <span className={`text-xs ${activeTab === "gifts" ? "opacity-60" : "opacity-50"}`}>
+                  ({gifts.length})
+                </span>
+              </button>
+              <button
+                onClick={() => setActiveTab("funds")}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  activeTab === "funds"
+                    ? "bg-royal text-white shadow-sm"
+                    : "text-charcoal-light hover:text-charcoal"
+                }`}
+              >
+                <Wallet className="w-4 h-4" />
+                Cash &amp; UPI
+                {cashFunds.length > 0 && (
+                  <span className={`text-xs ${activeTab === "funds" ? "opacity-60" : "opacity-50"}`}>
+                    ({cashFunds.length})
+                  </span>
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* ── Gifts tab ── */}
+          {(activeTab === "gifts" || !hasCashFunds) && (
+            <div>
+              {gifts.length > 0 ? (
+                <section className="mb-12">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div className="flex items-center gap-3">
+                      <span className="text-gold text-lg">❈</span>
+                      <h2 className="text-2xl font-serif font-bold text-royal">Gift Ideas</h2>
+                      <span className="text-gold text-lg">❈</span>
+                    </div>
+                    <div className="relative max-w-xs w-full">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal-light" />
+                      <Input
+                        type="search"
+                        placeholder="Search gifts..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10 border-gold/20 focus:border-gold rounded-full"
+                      />
+                    </div>
+                  </div>
+
+                  <GiftFilters
+                    priceRange={priceRange}
+                    maxPrice={maxPrice}
+                    onPriceRangeChange={setPriceRange}
+                    showPurchased={showPurchased}
+                    showAvailable={showAvailable}
+                    onShowPurchasedChange={setShowPurchased}
+                    onShowAvailableChange={setShowAvailable}
+                    onClearFilters={clearFilters}
+                    hasActiveFilters={hasActiveFilters}
+                  />
+
+                  {filteredGifts.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                      {filteredGifts.map((gift) => (
+                        <GiftCard key={gift.id} gift={gift} onGiftClick={handleGiftClick} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 bg-white rounded-xl border border-gold/10">
+                      <Gift className="w-12 h-12 mx-auto text-charcoal/20 mb-4" />
+                      <p className="text-charcoal-light">
+                        {hasActiveFilters
+                          ? "No gifts match your filters. Try adjusting them."
+                          : "No gifts available at the moment."}
+                      </p>
+                      {hasActiveFilters && (
+                        <Button variant="link" onClick={clearFilters} className="mt-2 text-royal">
+                          Clear all filters
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </section>
+              ) : (
+                !hasCashFunds && (
+                  <div className="text-center py-16">
+                    <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gold/10 flex items-center justify-center">
+                      <Gift className="w-12 h-12 text-gold" />
+                    </div>
+                    <h2 className="text-2xl font-serif font-semibold text-royal mb-3">Gift List Coming Soon!</h2>
+                    <p className="text-charcoal-light max-w-md mx-auto">
+                      The registry owner is still adding gifts. Check back soon!
+                    </p>
+                  </div>
+                )
+              )}
+
+              {/* Shipping address — lives in Gifts tab */}
+              {registry.shipping_address && (
+                <section className="mb-12">
+                  <div className="bg-white rounded-2xl border border-gold/20 p-6 md:p-8 max-w-2xl">
+                    <div className="flex items-start justify-between gap-4 mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
+                          <MapPin className="w-5 h-5 text-gold" />
+                        </div>
+                        <div>
+                          <h3 className="font-serif font-semibold text-royal text-lg">Shipping Address</h3>
+                          <p className="text-sm text-charcoal-light">Send physical gifts here</p>
+                        </div>
+                      </div>
+                      <Button variant="gold-outline" size="sm" onClick={handleCopyAddress}>
+                        {copiedAddress ? (
+                          <><Check className="w-4 h-4 mr-1" />Copied</>
+                        ) : (
+                          <><Copy className="w-4 h-4 mr-1" />Copy</>
+                        )}
+                      </Button>
+                    </div>
+                    <p className="text-charcoal whitespace-pre-line">{registry.shipping_address}</p>
+                  </div>
+                </section>
+              )}
+            </div>
+          )}
+
+          {/* ── Cash & UPI tab ── */}
+          {(activeTab === "funds" || !gifts.length) && hasCashFunds && (
             <UPIGiftingSection
-              upiId={registry.upi_id}
+              upiId={registry.upi_id ?? ""}
+              qrUrl={registry.upi_qr_url ?? undefined}
               cashFunds={cashFunds}
               registryId={registry.id}
             />
           )}
 
-          {registry.shipping_address && (
-            <section className="mb-12">
-              <div className="bg-white rounded-2xl border border-gold/20 p-6 md:p-8 max-w-2xl">
-                <div className="flex items-start justify-between gap-4 mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
-                      <MapPin className="w-5 h-5 text-gold" />
-                    </div>
-                    <div>
-                      <h3 className="font-serif font-semibold text-royal text-lg">Shipping Address</h3>
-                      <p className="text-sm text-charcoal-light">Send physical gifts here</p>
-                    </div>
-                  </div>
-                  <Button variant="gold-outline" size="sm" onClick={handleCopyAddress}>
-                    {copiedAddress ? (
-                      <><Check className="w-4 h-4 mr-1" />Copied</>
-                    ) : (
-                      <><Copy className="w-4 h-4 mr-1" />Copy</>
-                    )}
-                  </Button>
-                </div>
-                <p className="text-charcoal whitespace-pre-line">{registry.shipping_address}</p>
-              </div>
-            </section>
-          )}
-
+          {/* Thank you note — always at the bottom */}
           {registry.thank_you_note && (
             <section className="text-center py-10 px-6 bg-gradient-to-br from-white to-ivory rounded-2xl border border-gold/20 mb-12">
               <MessageSquare className="w-8 h-8 mx-auto text-gold mb-4" />
@@ -420,17 +477,6 @@ export default function ViewRegistryClient({
             </section>
           )}
 
-          {gifts.length === 0 && cashFunds.length === 0 && !registry.upi_id && (
-            <div className="text-center py-16">
-              <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gold/10 flex items-center justify-center">
-                <Gift className="w-12 h-12 text-gold" />
-              </div>
-              <h2 className="text-2xl font-serif font-semibold text-royal mb-3">Gift List Coming Soon!</h2>
-              <p className="text-charcoal-light max-w-md mx-auto">
-                The registry owner is still adding gifts. Check back soon!
-              </p>
-            </div>
-          )}
         </div>
       </main>
 

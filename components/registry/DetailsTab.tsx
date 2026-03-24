@@ -1,21 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { 
-  Copy, 
-  Check, 
-  CreditCard, 
-  MapPin, 
+import {
+  Copy,
+  Check,
+  CreditCard,
+  MapPin,
   Link as LinkIcon,
   Heart,
   Save,
   Trash2,
-  AlertTriangle
+  AlertTriangle,
+  Upload,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -32,6 +34,7 @@ import {
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 const supabase = getSupabaseBrowserClient();
 import type { Database } from "@/lib/supabase/types";
+import UPIQRDisplay from "./UPIQRDisplay";
 
 type Registry = Database["public"]["Tables"]["registries"]["Row"];
 
@@ -45,10 +48,71 @@ export default function DetailsTab({ registry, onUpdate }: DetailsTabProps) {
   const [upiId, setUpiId] = useState(registry.upi_id || "");
   const [shippingAddress, setShippingAddress] = useState(registry.shipping_address || "");
   const [thankYouNote, setThankYouNote] = useState(registry.thank_you_note || "");
-  
+  const [qrUrl, setQrUrl] = useState<string | null>(registry.upi_qr_url ?? null);
+  const [isUploadingQR, setIsUploadingQR] = useState(false);
+  const qrInputRef = useRef<HTMLInputElement>(null);
+
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleQRUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
+      return;
+    }
+
+    setIsUploadingQR(true);
+    try {
+      const filePath = `upi-qr/${registry.id}`;
+      const { error: uploadError } = await supabase.storage
+        .from("registry-images")
+        .upload(filePath, file, { cacheControl: "3600", upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("registry-images")
+        .getPublicUrl(filePath);
+
+      const { error: dbError } = await supabase
+        .from("registries")
+        .update({ upi_qr_url: publicUrl })
+        .eq("id", registry.id);
+
+      if (dbError) throw dbError;
+
+      setQrUrl(publicUrl);
+      toast.success("QR code uploaded!");
+    } catch (err) {
+      console.error("QR upload error:", err);
+      toast.error("Failed to upload QR code");
+    } finally {
+      setIsUploadingQR(false);
+      if (qrInputRef.current) qrInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveQR = async () => {
+    try {
+      await supabase.storage.from("registry-images").remove([`upi-qr/${registry.id}`]);
+
+      const { error: dbError } = await supabase
+        .from("registries")
+        .update({ upi_qr_url: null })
+        .eq("id", registry.id);
+
+      if (dbError) throw dbError;
+
+      setQrUrl(null);
+      toast.success("QR code removed");
+    } catch (err) {
+      console.error("QR remove error:", err);
+      toast.error("Failed to remove QR code");
+    }
+  };
 
   const handleDeleteRegistry = async () => {
     setIsDeleting(true);
@@ -146,12 +210,14 @@ export default function DetailsTab({ registry, onUpdate }: DetailsTabProps) {
       <div className="bg-white rounded-2xl border border-gold/10 p-6">
         <div className="flex items-center gap-2 mb-4">
           <CreditCard className="w-5 h-5 text-gold" />
-          <h2 className="text-lg font-serif font-semibold text-royal">UPI ID</h2>
+          <h2 className="text-lg font-serif font-semibold text-royal">UPI Payment</h2>
         </div>
         <p className="text-sm text-charcoal-light mb-3">
-          Add your UPI ID so guests can easily send cash contributions
+          Add your UPI ID and optionally upload your QR code so guests can pay easily
         </p>
-        <div className="flex items-center gap-2">
+
+        {/* UPI ID input */}
+        <div className="flex items-center gap-2 mb-6">
           <Input
             placeholder="yourname@upi"
             value={upiId}
@@ -165,12 +231,57 @@ export default function DetailsTab({ registry, onUpdate }: DetailsTabProps) {
               onClick={() => handleCopy(registry.upi_id!, "upi")}
               className="shrink-0"
             >
-              {copiedField === "upi" ? (
-                <Check className="w-4 h-4" />
-              ) : (
-                <Copy className="w-4 h-4" />
-              )}
+              {copiedField === "upi" ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             </Button>
+          )}
+        </div>
+
+        {/* QR code upload */}
+        <div className="border-t border-gold/10 pt-5">
+          <Label className="text-sm font-medium text-charcoal mb-3 block">
+            UPI QR Code <span className="text-charcoal-light font-normal">(optional)</span>
+          </Label>
+
+          {qrUrl ? (
+            /* QR preview + remove */
+            <div className="flex items-start gap-4">
+              <UPIQRDisplay upiId={upiId || registry.upi_id || ""} qrUrl={qrUrl} />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRemoveQR}
+                className="shrink-0 mt-1 text-destructive hover:text-destructive border-destructive/20 hover:border-destructive/40"
+              >
+                <X className="w-4 h-4 mr-1" />
+                Remove
+              </Button>
+            </div>
+          ) : (
+            /* Upload prompt */
+            <div
+              className="flex flex-col items-center justify-center gap-2 p-6 rounded-xl border-2 border-dashed border-gold/20 bg-gold/[0.02] cursor-pointer hover:border-gold/40 hover:bg-gold/[0.04] transition-colors"
+              onClick={() => qrInputRef.current?.click()}
+            >
+              <Upload className="w-6 h-6 text-charcoal-light" />
+              <p className="text-sm text-charcoal-light text-center">
+                Upload your UPI QR code image from your bank app
+              </p>
+              <p className="text-xs text-charcoal-light/60">PNG, JPG up to 5MB</p>
+            </div>
+          )}
+
+          <input
+            ref={qrInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleQRUpload}
+            disabled={isUploadingQR}
+          />
+          {isUploadingQR && (
+            <p className="text-sm text-charcoal-light mt-2 text-center animate-pulse">
+              Uploading QR code…
+            </p>
           )}
         </div>
       </div>

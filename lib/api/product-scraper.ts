@@ -18,6 +18,9 @@ export async function scrapeProductUrl(url: string): Promise<ScrapeResponse> {
   try {
     const { data, error } = await supabase.functions.invoke("scrape-product", {
       body: { url },
+      headers: {
+        apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      },
     });
 
     if (error) {

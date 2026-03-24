@@ -176,7 +176,7 @@ export default function ManageContributionsTab({
                           >
                             <div>
                               <p className="font-medium text-charcoal">
-                                {contrib.is_anonymous ? "Anonymous" : contrib.contributor_name}
+                                {contrib.contributor_name}
                               </p>
                               {contrib.message && (
                                 <p className="text-sm text-charcoal-light italic">

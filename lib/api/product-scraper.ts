@@ -14,20 +14,27 @@ interface ScrapeResponse {
 }
 
 export async function scrapeProductUrl(url: string): Promise<ScrapeResponse> {
-  const supabase = getSupabaseBrowserClient();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
   try {
-    const { data, error } = await supabase.functions.invoke("scrape-product", {
-      body: { url },
+    const response = await fetch(`${supabaseUrl}/functions/v1/scrape-product`, {
+      method: "POST",
       headers: {
-        apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${supabaseAnonKey}`,
+        "apikey": supabaseAnonKey,
       },
+      body: JSON.stringify({ url }),
     });
 
-    if (error) {
-      console.error("Edge function error:", error);
-      return { success: false, error: error.message };
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Edge function error:", response.status, errorText);
+      return { success: false, error: `Edge function returned ${response.status}` };
     }
 
+    const data = await response.json();
     return data as ScrapeResponse;
   } catch (err) {
     console.error("Error calling scrape function:", err);
@@ -37,3 +44,4 @@ export async function scrapeProductUrl(url: string): Promise<ScrapeResponse> {
     };
   }
 }
+

@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-ivory">
+    <div className="min-h-screen bg-surface">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageJsonLd) }}
@@ -45,19 +45,19 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <RevealWrapper delay={0}>
+          <HowItWorksSection />
+        </RevealWrapper>
+        <RevealWrapper delay={0}>
           <OccasionsSection />
         </RevealWrapper>
         <RevealWrapper delay={0}>
           <WhyGifaaSection />
         </RevealWrapper>
         <RevealWrapper delay={0}>
-          <HowItWorksSection />
+          <TestimonialsSection />
         </RevealWrapper>
         <RevealWrapper delay={0}>
           <WorksWithSection />
-        </RevealWrapper>
-        <RevealWrapper delay={0}>
-          <TestimonialsSection />
         </RevealWrapper>
         <RevealWrapper delay={0}>
           <FAQsSection />

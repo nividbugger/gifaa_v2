@@ -1,123 +1,112 @@
 "use client";
 
-import { Gift, ShoppingBag, Wallet, Heart } from "lucide-react";
-import { useAutoScroll } from "@/hooks/useAutoScroll";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useRouter } from "next/navigation";
 
-const valueProps = [
-  {
-    icon: Gift,
-    title: "No duplicate gifts — ever",
-    description: "Real-time tracking ensures every gift is unique and appreciated.",
-    image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&h=300&fit=crop&q=80",
-  },
-  {
-    icon: ShoppingBag,
-    title: "Works with any store",
-    description: "Add products from Amazon, Flipkart, Nykaa, or any online store.",
-    image: "https://images.unsplash.com/photo-1607082349566-187342175e2f?w=400&h=300&fit=crop&q=80",
-  },
-  {
-    icon: Wallet,
-    title: "Easy UPI cash gifting",
-    description: "Let guests contribute with heartfelt notes via UPI payments.",
-    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop&q=80",
-  },
-  {
-    icon: Heart,
-    title: "Simple & stress-free",
-    description: "Beautiful registries that take minutes to create and share.",
-    image: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop&q=80",
-  },
-];
-
-export default function WhyGifaaSection() {
-  const isMobile = useIsMobile();
-  const { scrollRef, handleTouchStart, handleTouchEnd } = useAutoScroll<HTMLDivElement>({
-    interval: 4000,
-    scrollAmount: 300,
-    enabled: isMobile,
-  });
+const WhyGifaaSection = () => {
+  const router = useRouter();
 
   return (
-    <section className="py-20 md:py-28 bg-gradient-to-b from-ivory-warm to-ivory relative overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+    <section className="py-24 px-6 md:px-8 bg-[#093a6f] overflow-hidden relative">
+      {/* Decorative skewed accent */}
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-[#79590f]/10 -skew-x-12 transform translate-x-20 pointer-events-none" />
 
-      <div className="container mx-auto max-w-6xl px-6 relative">
-        <div className="text-center mb-12 animate-fade-up">
-          <span className="inline-block text-gold text-sm font-semibold tracking-wider uppercase mb-4">
-            Why Gifaa?
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-semibold text-royal mb-4">
-            Thoughtful Gifting, Simplified
-          </h2>
-          <p className="text-lg text-charcoal-light max-w-xl mx-auto">
-            Because every celebration deserves thoughtful gifting — without confusion.
-          </p>
-        </div>
+      <div className="max-w-screen-xl mx-auto relative z-10">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Left: headline + features */}
+          <div>
+            <h2 className="text-4xl md:text-5xl font-serif text-white mb-8 leading-tight">
+              Your Wishlist,{" "}
+              <br />
+              <span className="text-[#ebc16f] italic">Zero Middlemen.</span>
+            </h2>
 
-        {/* Mobile: Horizontal Scroll */}
-        <div
-          ref={scrollRef}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          className="flex md:hidden gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-6 px-6"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-        >
-          {valueProps.map((prop, index) => (
-            <div
-              key={prop.title}
-              className="flex-shrink-0 w-[280px] snap-center animate-fade-up"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="bg-white rounded-2xl overflow-hidden border border-gold/10 hover:border-gold/30 hover:shadow-soft transition-all group h-full">
-                <div className="relative h-40 overflow-hidden">
-                  <img
-                    src={prop.image}
-                    alt={prop.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            <div className="space-y-8">
+              <div className="flex gap-6">
+                <div className="shrink-0 w-12 h-12 bg-white/10 rounded-full flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[#ebc16f]">link</span>
+                </div>
+                <div>
+                  <h4 className="text-xl font-serif text-white mb-2">Universal Cart</h4>
+                  <p className="text-[#a7c8ff] font-sans leading-relaxed">
+                    Found something on Amazon, Tata Cliq, or a small boutique? Just paste the URL. Your guests buy it directly for you.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-6">
+                <div className="shrink-0 w-12 h-12 bg-white/10 rounded-full flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[#ebc16f]">currency_rupee</span>
+                </div>
+                <div>
+                  <h4 className="text-xl font-serif text-white mb-2">Direct UPI Settlement</h4>
+                  <p className="text-[#a7c8ff] font-sans leading-relaxed">
+                    No holding periods. When guests contribute cash, it goes directly to your UPI ID. Instant, secure, and personal.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: demo widget */}
+          <div className="bg-white/5 backdrop-blur-md p-2 rounded-3xl border border-white/10 shadow-2xl">
+            <div className="bg-surface p-8 rounded-2xl">
+              <div className="mb-6">
+                <label className="block text-[#79590f] font-semibold mb-2 text-[11px] uppercase tracking-widest font-sans">
+                  Paste Product Link
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    className="flex-1 bg-surface-container-low border border-outline-variant/20 rounded-lg font-sans text-sm py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#79590f]/20 text-on-surface"
+                    placeholder="https://store.com/product/..."
+                    type="text"
+                    readOnly
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal/30 to-transparent" />
-                  <div className="absolute bottom-3 left-3 w-10 h-10 rounded-xl bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-soft">
-                    <prop.icon className="w-5 h-5 text-royal" />
-                  </div>
-                </div>
-                <div className="p-5">
-                  <h3 className="font-semibold text-charcoal mb-2">{prop.title}</h3>
-                  <p className="text-sm text-charcoal-light leading-relaxed">{prop.description}</p>
+                  <button
+                    onClick={() => router.push("/create-registry")}
+                    className="bg-[#093a6f] text-white px-5 py-3 rounded-lg font-medium text-sm hover:bg-[#0d4a8a] transition-colors"
+                  >
+                    Add Item
+                  </button>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
 
-        {/* Desktop: Grid */}
-        <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {valueProps.map((prop, index) => (
-            <div
-              key={prop.title}
-              className="bg-white rounded-2xl overflow-hidden border border-gold/10 hover:border-gold/30 hover:shadow-soft transition-all group animate-fade-up"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="relative h-44 overflow-hidden">
-                <img
-                  src={prop.image}
-                  alt={prop.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal/30 to-transparent" />
-                <div className="absolute bottom-3 left-3 w-10 h-10 rounded-xl bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform">
-                  <prop.icon className="w-5 h-5 text-royal" />
+              <div className="border-t border-outline-variant/10 pt-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h5 className="font-serif text-[#093a6f] font-bold">Quick Gift Fund</h5>
+                  <span className="material-symbols-outlined text-[#79590f]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                    diamond
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                  <button className="py-3 border border-outline-variant/20 rounded-lg text-on-surface hover:bg-surface-container transition-colors text-sm font-sans">
+                    ₹5,000
+                  </button>
+                  <button className="py-3 border border-[#79590f] bg-[#79590f]/5 rounded-lg text-[#79590f] font-bold text-sm font-sans">
+                    ₹10,000
+                  </button>
+                  <button className="py-3 border border-outline-variant/20 rounded-lg text-on-surface hover:bg-surface-container transition-colors text-sm font-sans">
+                    Custom
+                  </button>
+                </div>
+
+                <div className="bg-surface-container-low p-4 rounded-xl flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-white rounded flex items-center justify-center shadow-sm">
+                      <span className="text-[10px] font-black text-blue-900 italic">UPI</span>
+                    </div>
+                    <span className="text-xs font-medium text-on-surface-variant font-sans">Instant Direct Settlement</span>
+                  </div>
+                  <span className="material-symbols-outlined text-green-600" style={{ fontVariationSettings: "'FILL' 1" }}>
+                    verified_user
+                  </span>
                 </div>
               </div>
-              <div className="p-5">
-                <h3 className="font-semibold text-charcoal mb-2">{prop.title}</h3>
-                <p className="text-sm text-charcoal-light leading-relaxed">{prop.description}</p>
-              </div>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default WhyGifaaSection;

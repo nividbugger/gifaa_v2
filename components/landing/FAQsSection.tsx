@@ -36,12 +36,12 @@ const faqs = [
 
 export default function FAQsSection() {
   return (
-    <section id="faqs" className="py-20 md:py-24 bg-ivory-warm">
+    <section id="faqs" className="py-20 md:py-24 bg-surface-container-low">
       <div className="container mx-auto max-w-3xl px-6">
-        <div className="text-center mb-12 animate-fade-up">
-          <span className="inline-block text-gold text-sm font-semibold tracking-wider uppercase mb-4">FAQs</span>
-          <h2 className="text-3xl md:text-4xl font-serif font-semibold text-charcoal mb-4">Common Questions</h2>
-          <p className="text-charcoal-light text-lg">Everything you need to know about creating your perfect registry.</p>
+        <div className="text-center mb-12">
+          <span className="inline-block text-[#79590f] text-sm font-semibold tracking-[0.2em] uppercase mb-4 font-sans">FAQs</span>
+          <h2 className="text-3xl md:text-4xl font-serif font-semibold text-[#093a6f] mb-4">Common Questions</h2>
+          <p className="text-on-surface-variant text-lg font-sans">Everything you need to know about creating your perfect registry.</p>
         </div>
 
         <Accordion type="single" collapsible className="space-y-4">
@@ -49,13 +49,12 @@ export default function FAQsSection() {
             <AccordionItem
               key={index}
               value={`item-${index}`}
-              className="bg-white rounded-xl border border-gold/10 px-6 shadow-soft data-[state=open]:border-gold/30 data-[state=open]:shadow-elevated transition-all animate-fade-up"
-              style={{ animationDelay: `${index * 0.05}s` }}
+              className="bg-surface rounded-xl border border-outline-variant/20 px-6 data-[state=open]:border-[#79590f]/30 transition-all"
             >
-              <AccordionTrigger className="text-left font-medium text-charcoal hover:text-royal hover:no-underline py-5">
+              <AccordionTrigger className="text-left font-medium text-on-surface hover:text-[#093a6f] hover:no-underline py-5 font-sans">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="text-charcoal-light leading-relaxed pb-5">
+              <AccordionContent className="text-on-surface-variant leading-relaxed pb-5 font-sans">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

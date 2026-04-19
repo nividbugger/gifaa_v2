@@ -8,7 +8,7 @@ const Footer = () => {
   const [isContactOpen, setIsContactOpen] = useState(false);
 
   return (
-    <footer className="bg-charcoal py-16">
+    <footer className="bg-royal-dark py-16">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
@@ -39,9 +39,13 @@ const Footer = () => {
           <div>
             <h4 className="font-serif text-lg font-semibold text-gold mb-4">Company</h4>
             <ul className="space-y-3">
-              {["About Us", "Blog", "Careers"].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-ivory/50 hover:text-gold transition-colors duration-200 text-sm">{item}</a>
+              {[
+                { label: "About Us", href: "#" },
+                { label: "Blog", href: "/blog" },
+                { label: "Careers", href: "#" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} className="text-ivory/50 hover:text-gold transition-colors duration-200 text-sm">{item.label}</a>
                 </li>
               ))}
               <li className="relative">
@@ -54,7 +58,7 @@ const Footer = () => {
                 </button>
 
                 {isContactOpen && (
-                  <div className="absolute left-0 top-full mt-2 bg-charcoal-light rounded-lg shadow-xl border border-ivory/10 p-3 min-w-[220px] z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="absolute left-0 top-full mt-2 bg-royal rounded-lg shadow-xl border border-ivory/10 p-3 min-w-[220px] z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                     <a href="mailto:letsgifaa@gmail.com" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-ivory/5 transition-colors group">
                       <div className="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center">
                         <Mail className="w-4 h-4 text-gold" />
@@ -83,11 +87,9 @@ const Footer = () => {
           <div>
             <h4 className="font-serif text-lg font-semibold text-gold mb-4">Legal</h4>
             <ul className="space-y-3">
-              {["Privacy Policy", "Terms of Service", "Cookie Policy"].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-ivory/50 hover:text-gold transition-colors duration-200 text-sm">{item}</a>
-                </li>
-              ))}
+              <li>
+                <a href="/privacy-policy" className="text-ivory/50 hover:text-gold transition-colors duration-200 text-sm">Privacy Policy</a>
+              </li>
             </ul>
           </div>
         </div>

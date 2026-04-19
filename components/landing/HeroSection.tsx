@@ -66,7 +66,7 @@ const HeroSection = () => {
             </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-serif text-[#093a6f] leading-[1.1] mb-8 tracking-tight">
-            Gift Thoughtfully For
+            Gift Registries For
             <br />
             <span className="italic text-[#79590f]">Life&apos;s Biggest Moments</span>
           </h1>

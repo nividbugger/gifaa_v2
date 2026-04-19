@@ -54,6 +54,9 @@ const Header = () => {
             <a href="/#faqs" className="text-on-surface hover:text-[#79590f] transition-colors duration-300 text-sm">
               FAQs
             </a>
+            <a href="/blog" className="text-on-surface hover:text-[#79590f] transition-colors duration-300 text-sm">
+              Blogs
+            </a>
           </nav>
         </div>
 
@@ -147,6 +150,9 @@ const Header = () => {
           </a>
           <a href="/#faqs" className="block text-on-surface-variant hover:text-[#79590f] transition-colors text-sm font-medium" onClick={() => setMobileMenuOpen(false)}>
             FAQs
+          </a>
+          <a href="/blog" className="block text-on-surface-variant hover:text-[#79590f] transition-colors text-sm font-medium" onClick={() => setMobileMenuOpen(false)}>
+            Blogs
           </a>
           {!user && (
             <div className="pt-4 border-t border-outline-variant/20 flex flex-col gap-2">

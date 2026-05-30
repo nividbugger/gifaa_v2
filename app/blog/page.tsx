@@ -5,7 +5,7 @@ import Footer from "@/components/layout/Footer";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Blog – Gift Registry Tips, Guides & Trends | Gifaa",
+  title: { absolute: "Blog – Gift Registry Tips, Guides & Trends | Gifaa" },
   description:
     "Explore expert guides on gift registries, wedding planning tips, and gifting trends in India. Everything you need to make celebrations more thoughtful.",
   alternates: { canonical: "https://gifaa.in/blog" },

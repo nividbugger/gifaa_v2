@@ -6,15 +6,15 @@ import RevealWrapper from "@/components/layout/RevealWrapper";
 import RegistryCrossLinks from "@/components/landing/RegistryCrossLinks";
 
 export const metadata: Metadata = {
-  title: { absolute: "Wedding Gift Registry India – Create Yours Free | Gifaa" },
+  title: { absolute: "Housewarming Registry India – Create Yours Free | Gifaa" },
   description:
-    "Create a beautiful wedding gift registry and let guests buy gifts directly from any store. No middlemen, no fees. India's most loved wedding registry platform.",
-  alternates: { canonical: "https://gifaa.in/wedding-gift-registry" },
+    "Create a housewarming gift registry and let guests gift exactly what your new home needs. Add items from any store or accept UPI contributions. Free on Gifaa.",
+  alternates: { canonical: "https://gifaa.in/housewarming-gift-registry" },
   openGraph: {
-    title: "Wedding Gift Registry India – Create Yours Free | Gifaa",
+    title: "Housewarming Registry India – Create Yours Free | Gifaa",
     description:
-      "Create a beautiful wedding gift registry and let guests buy gifts directly from any store. No middlemen, no fees.",
-    url: "https://gifaa.in/wedding-gift-registry",
+      "Create a housewarming gift registry and let guests gift exactly what your new home needs. Add items from any store or accept UPI contributions.",
+    url: "https://gifaa.in/housewarming-gift-registry",
     images: [
       {
         url: "https://gifaa.in/lovable-uploads/2906e693-4dd1-4514-8524-e5acfd185f93.png",
@@ -26,10 +26,10 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  name: "Wedding Gift Registry India",
+  name: "Housewarming Registry India",
   description:
-    "Create a beautiful wedding gift registry with Gifaa. Share with guests and receive gifts directly from any store.",
-  url: "https://gifaa.in/wedding-gift-registry",
+    "Create a beautiful housewarming registry with Gifaa. Share with guests and receive exactly the gifts your new home needs.",
+  url: "https://gifaa.in/housewarming-gift-registry",
   breadcrumb: {
     "@type": "BreadcrumbList",
     itemListElement: [
@@ -37,8 +37,8 @@ const jsonLd = {
       {
         "@type": "ListItem",
         position: 2,
-        name: "Wedding Gift Registry",
-        item: "https://gifaa.in/wedding-gift-registry",
+        name: "Housewarming Registry",
+        item: "https://gifaa.in/housewarming-gift-registry",
       },
     ],
   },
@@ -46,57 +46,47 @@ const jsonLd = {
 
 const stories = [
   {
-    couple: "Ananya & Rohan",
-    location: "Jaipur, Rajasthan",
+    name: "Nikhil & Sreya",
+    location: "Hyderabad, Telangana",
     year: "2024",
     image:
-      "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop&q=80",
     story:
-      "Planning a palace wedding in Jaipur felt overwhelming — until we found Gifaa. We added everything from hand-painted dinnerware by a local potter to a KitchenAid from Amazon, all in one registry. Our guests in Delhi, Mumbai, and even London could see exactly what we wanted and buy directly. No duplicate toasters. No awkward returns. Just the most beautiful gifts, arriving right at our door.",
-    highlight: "127 guests, zero duplicate gifts",
+      "Moving into our first home, we kept getting asked what we needed for the griha pravesh. Instead of repeating ourselves on twenty WhatsApp chats, we sent one Gifaa link. Guests picked everything from a dinner set to a robot vacuum, and a few pooled together for a sofa we'd been saving for. Our new home filled up with things we actually chose.",
+    highlight: "84 guests, one shared link",
   },
   {
-    couple: "Divya & Siddharth",
-    location: "Goa",
+    name: "Farhan & Zoya",
+    location: "Mumbai, Maharashtra",
     year: "2023",
     image:
-      "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&h=600&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&h=600&fit=crop&q=80",
     story:
-      "We had a small beach wedding with 40 close family members. We didn't want to seem greedy asking for gifts, but we also genuinely needed things for our new home. Gifaa made it feel natural — the registry page looked so elegant that guests actually thanked us for making it easy. Three months on, every time we use our new coffee machine, we think of Siddharth's aunt in Coimbatore who sent it.",
-    highlight: "40 guests, every gift cherished",
-  },
-  {
-    couple: "Pooja & Arjun",
-    location: "Bengaluru, Karnataka",
-    year: "2024",
-    image:
-      "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=600&fit=crop&q=80",
-    story:
-      "Tech-savvy couple, traditional wedding. We added items from Fabindia, Pepperfry, and Nykaa Beauty all in one place. My mother-in-law, who isn't very online, just clicked the link and chose a saree set from Fabindia she knew we'd love. It was shipped to our apartment in Indiranagar in three days. Gifaa bridged the gap between our generation and theirs beautifully.",
-    highlight: "3 generations of givers, 1 seamless registry",
+      "We didn't want clutter — we wanted a few good things. Gifaa let us be specific: a quality cookware set, smart lighting, and a fund toward curtains. Guests appreciated knowing exactly what we'd love, and we avoided ending up with five wall clocks. Every gift had a place in our home from day one.",
+    highlight: "Intentional gifts, zero clutter",
   },
 ];
 
 const faqs = [
   {
-    q: "Is Gifaa's wedding gift registry free to create?",
-    a: "Yes, completely free. No setup fees, no commission on gifts. Guests buy directly from the store and you receive the gift or funds.",
+    q: "Is Gifaa's housewarming registry free to create?",
+    a: "Yes, completely free. No setup fees and no commission on gifts. Guests buy directly from the store or send funds via UPI, and you receive everything in full.",
   },
   {
-    q: "Can I add items from any Indian online store?",
-    a: "Absolutely. Add items from Amazon, Flipkart, Nykaa, Pepperfry, Fabindia, Tata Cliq, or any website — simply paste the product link.",
+    q: "What should I add to a housewarming registry?",
+    a: "Think about what makes a house a home — cookware, dinnerware, home décor, appliances, smart-home devices, or a cash fund toward bigger purchases like a sofa or curtains. Add items from Amazon, Pepperfry, Urban Ladder, or any store.",
   },
   {
-    q: "How do guests buy gifts from my wedding registry?",
-    a: "Share your private registry link. Guests see your wishlist and click directly to the store to purchase — no account needed on their end.",
+    q: "Can guests contribute towards a single big item?",
+    a: "Absolutely. Add a cash fund for a larger purchase and multiple guests can each contribute any amount via UPI until the goal is reached.",
   },
   {
-    q: "What happens if two guests want to buy the same gift?",
-    a: "Gifaa marks gifts as purchased in real-time so no two guests accidentally buy the same item.",
+    q: "How does Gifaa avoid duplicate housewarming gifts?",
+    a: "Each gift is marked as reserved in real-time. Once a guest claims an item, it's hidden from everyone else — so no two guests gift the same wall clock.",
   },
 ];
 
-export default function WeddingGiftRegistryPage() {
+export default function HousewarmingGiftRegistryPage() {
   return (
     <div className="min-h-screen bg-surface">
       <script
@@ -111,29 +101,29 @@ export default function WeddingGiftRegistryPage() {
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage:
-                "url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=1600&h=900&fit=crop&q=80')",
+                "url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1600&h=900&fit=crop&q=80')",
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#093a6f]/85 via-[#093a6f]/60 to-transparent" />
           <div className="relative z-10 max-w-screen-xl mx-auto px-6 md:px-8 py-32">
             <div className="max-w-2xl">
               <span className="inline-block text-[#d4a855] font-semibold uppercase tracking-[0.2em] mb-6 text-xs font-sans">
-                Wedding Gift Registry
+                Housewarming Registry
               </span>
               <h1 className="text-5xl md:text-7xl font-serif text-white leading-[1.1] mb-6 tracking-tight">
-                Your Wedding,
+                A New Home,
                 <br />
-                <span className="italic text-[#d4a855]">Your Registry</span>
+                <span className="italic text-[#d4a855]">Furnished with Love</span>
               </h1>
               <p className="text-lg md:text-xl text-white/80 font-sans leading-relaxed mb-10 max-w-xl">
-                Create a beautiful wedding gift registry in minutes. Add items from any store, share
-                one link, and let guests shop directly — no middlemen, no fees.
+                Create a beautiful housewarming registry in minutes. Add what your new home needs
+                from any store, share one link, and let guests gift with purpose.
               </p>
               <Link
-                href="/create-registry?occasion=wedding"
+                href="/create-registry?occasion=housewarming"
                 className="inline-flex items-center gap-3 bg-[#d4a855] hover:bg-[#c49a45] text-white font-semibold font-sans px-10 py-4 rounded-full text-base transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
               >
-                Create Your Wedding Registry
+                Create Your Housewarming Registry
                 <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>
                   arrow_forward
                 </span>
@@ -151,10 +141,10 @@ export default function WeddingGiftRegistryPage() {
                   Real Stories
                 </span>
                 <h2 className="text-4xl md:text-5xl font-serif text-[#093a6f] mb-6">
-                  Love, Gifts &amp; Happy Endings
+                  New Beginnings, Beautifully Gifted
                 </h2>
                 <p className="text-on-surface-variant font-sans max-w-xl mx-auto">
-                  Real couples. Real registries. Real joy on their wedding day.
+                  Real homeowners. Real registries. A house that became a home.
                 </p>
               </div>
 
@@ -166,21 +156,19 @@ export default function WeddingGiftRegistryPage() {
                       i % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""
                     }`}
                   >
-                    {/* Image */}
                     <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                       <img
                         src={s.image}
-                        alt={`${s.couple}'s wedding registry story`}
+                        alt={`${s.name}'s housewarming registry story`}
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute bottom-5 left-5 bg-white/90 backdrop-blur-sm rounded-xl px-5 py-3">
-                        <p className="text-[#079590f] font-serif font-bold text-sm text-[#093a6f]">
+                        <p className="font-serif font-bold text-sm text-[#093a6f]">
                           {s.highlight}
                         </p>
                       </div>
                     </div>
 
-                    {/* Text */}
                     <div className="space-y-6">
                       <div className="text-[#79590f] opacity-50">
                         <span
@@ -194,7 +182,7 @@ export default function WeddingGiftRegistryPage() {
                         &ldquo;{s.story}&rdquo;
                       </p>
                       <div className="pt-2 border-t border-outline-variant/20">
-                        <h3 className="font-bold font-serif text-[#093a6f] text-lg">{s.couple}</h3>
+                        <h3 className="font-bold font-serif text-[#093a6f] text-lg">{s.name}</h3>
                         <p className="text-xs text-on-surface-variant font-sans uppercase tracking-widest mt-1">
                           {s.location} &middot; {s.year}
                         </p>
@@ -225,19 +213,19 @@ export default function WeddingGiftRegistryPage() {
                     icon: "add_shopping_cart",
                     color: "#093a6f",
                     step: "1. Build",
-                    desc: "Add any item from any store by pasting its link. Mix boutique finds with Amazon favourites — all in one registry.",
+                    desc: "Add cookware, décor, appliances, or a cash fund by pasting links from Pepperfry, Urban Ladder, Amazon, or any store.",
                   },
                   {
                     icon: "send",
                     color: "#79590f",
                     step: "2. Share",
-                    desc: "Send your personal registry link on WhatsApp, email, or your wedding invite. Guests need no account to browse.",
+                    desc: "Send your registry link on WhatsApp or with your housewarming invite. Guests browse instantly — no account required.",
                   },
                   {
                     icon: "favorite",
                     color: "#093a6f",
                     step: "3. Receive",
-                    desc: "Gifts ship directly to your door from the store, or funds arrive instantly via UPI. No delays, no handling.",
+                    desc: "Gifts ship directly to your new address, or funds arrive instantly via UPI. Everything updates in real-time.",
                   },
                 ].map((item) => (
                   <div
@@ -288,7 +276,7 @@ export default function WeddingGiftRegistryPage() {
 
         {/* ── Cross-links ── */}
         <RevealWrapper delay={0}>
-          <RegistryCrossLinks currentHref="/wedding-gift-registry" />
+          <RegistryCrossLinks currentHref="/housewarming-gift-registry" />
         </RevealWrapper>
 
         {/* ── CTA Banner ── */}
@@ -299,16 +287,17 @@ export default function WeddingGiftRegistryPage() {
                 Start Today
               </span>
               <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">
-                Ready to Build Your <span className="italic text-[#d4a855]">Dream Registry?</span>
+                Make Your New House{" "}
+                <span className="italic text-[#d4a855]">a Home</span>
               </h2>
               <p className="text-white/70 font-sans text-lg mb-10 max-w-lg mx-auto">
-                Free to create. Beautiful to share. Your guests will thank you.
+                Free to create. Beautiful to share. Gifts your new home will actually use.
               </p>
               <Link
-                href="/create-registry?occasion=wedding"
+                href="/create-registry?occasion=housewarming"
                 className="inline-flex items-center gap-3 bg-[#d4a855] hover:bg-[#c49a45] text-white font-semibold font-sans px-12 py-5 rounded-full text-base transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
               >
-                Create Your Wedding Registry — Free
+                Create Your Housewarming Registry — Free
                 <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>
                   arrow_forward
                 </span>

@@ -6,15 +6,15 @@ import RevealWrapper from "@/components/layout/RevealWrapper";
 import RegistryCrossLinks from "@/components/landing/RegistryCrossLinks";
 
 export const metadata: Metadata = {
-  title: { absolute: "Wedding Gift Registry India – Create Yours Free | Gifaa" },
+  title: { absolute: "Baby Shower Registry India – Create Yours Free | Gifaa" },
   description:
-    "Create a beautiful wedding gift registry and let guests buy gifts directly from any store. No middlemen, no fees. India's most loved wedding registry platform.",
-  alternates: { canonical: "https://gifaa.in/wedding-gift-registry" },
+    "Create a beautiful baby shower registry and let family & friends gift exactly what your little one needs. Add items from any store, share one link. Free on Gifaa.",
+  alternates: { canonical: "https://gifaa.in/baby-shower-gift-registry" },
   openGraph: {
-    title: "Wedding Gift Registry India – Create Yours Free | Gifaa",
+    title: "Baby Shower Registry India – Create Yours Free | Gifaa",
     description:
-      "Create a beautiful wedding gift registry and let guests buy gifts directly from any store. No middlemen, no fees.",
-    url: "https://gifaa.in/wedding-gift-registry",
+      "Create a beautiful baby shower registry and let family & friends gift exactly what your little one needs. Add items from any store, share one link.",
+    url: "https://gifaa.in/baby-shower-gift-registry",
     images: [
       {
         url: "https://gifaa.in/lovable-uploads/2906e693-4dd1-4514-8524-e5acfd185f93.png",
@@ -26,10 +26,10 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  name: "Wedding Gift Registry India",
+  name: "Baby Shower Registry India",
   description:
-    "Create a beautiful wedding gift registry with Gifaa. Share with guests and receive gifts directly from any store.",
-  url: "https://gifaa.in/wedding-gift-registry",
+    "Create a beautiful baby shower registry with Gifaa. Share with family and friends and receive exactly the gifts your baby needs.",
+  url: "https://gifaa.in/baby-shower-gift-registry",
   breadcrumb: {
     "@type": "BreadcrumbList",
     itemListElement: [
@@ -37,8 +37,8 @@ const jsonLd = {
       {
         "@type": "ListItem",
         position: 2,
-        name: "Wedding Gift Registry",
-        item: "https://gifaa.in/wedding-gift-registry",
+        name: "Baby Shower Registry",
+        item: "https://gifaa.in/baby-shower-gift-registry",
       },
     ],
   },
@@ -46,57 +46,47 @@ const jsonLd = {
 
 const stories = [
   {
-    couple: "Ananya & Rohan",
-    location: "Jaipur, Rajasthan",
+    name: "Meghna & Karthik",
+    location: "Chennai, Tamil Nadu",
     year: "2024",
     image:
-      "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=800&h=600&fit=crop&q=80",
     story:
-      "Planning a palace wedding in Jaipur felt overwhelming — until we found Gifaa. We added everything from hand-painted dinnerware by a local potter to a KitchenAid from Amazon, all in one registry. Our guests in Delhi, Mumbai, and even London could see exactly what we wanted and buy directly. No duplicate toasters. No awkward returns. Just the most beautiful gifts, arriving right at our door.",
-    highlight: "127 guests, zero duplicate gifts",
+      "We had no idea how much a newborn actually needs. My sister in the US, my colleagues, my mom's friends — everyone wanted to help, but kept asking 'what do you need?'. Gifaa let us list everything from a baby monitor to organic cotton onesies in one place. Relatives abroad gifted the bigger items, friends nearby chipped into a stroller fund. Nothing was duplicated, nothing was wasted.",
+    highlight: "62 guests, zero duplicate gifts",
   },
   {
-    couple: "Divya & Siddharth",
-    location: "Goa",
+    name: "Aishwarya & Dev",
+    location: "Pune, Maharashtra",
     year: "2023",
     image:
-      "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&h=600&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1492725764893-90b379c2b6e7?w=800&h=600&fit=crop&q=80",
     story:
-      "We had a small beach wedding with 40 close family members. We didn't want to seem greedy asking for gifts, but we also genuinely needed things for our new home. Gifaa made it feel natural — the registry page looked so elegant that guests actually thanked us for making it easy. Three months on, every time we use our new coffee machine, we think of Siddharth's aunt in Coimbatore who sent it.",
-    highlight: "40 guests, every gift cherished",
-  },
-  {
-    couple: "Pooja & Arjun",
-    location: "Bengaluru, Karnataka",
-    year: "2024",
-    image:
-      "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=600&fit=crop&q=80",
-    story:
-      "Tech-savvy couple, traditional wedding. We added items from Fabindia, Pepperfry, and Nykaa Beauty all in one place. My mother-in-law, who isn't very online, just clicked the link and chose a saree set from Fabindia she knew we'd love. It was shipped to our apartment in Indiranagar in three days. Gifaa bridged the gap between our generation and theirs beautifully.",
-    highlight: "3 generations of givers, 1 seamless registry",
+      "A surprise baby shower meant our friends planned everything — including the registry. They added a mix of practical essentials and a fund toward a crib we'd been eyeing. By the time the shower ended, half the nursery was sorted. The best part was reading the little messages each person left with their gift.",
+    highlight: "Whole nursery, sorted in one afternoon",
   },
 ];
 
 const faqs = [
   {
-    q: "Is Gifaa's wedding gift registry free to create?",
-    a: "Yes, completely free. No setup fees, no commission on gifts. Guests buy directly from the store and you receive the gift or funds.",
+    q: "Is Gifaa's baby shower registry free to create?",
+    a: "Yes, completely free. No setup fees and no commission. Guests buy directly from the store, or contribute to a fund via UPI, and you receive the gift or money in full.",
   },
   {
-    q: "Can I add items from any Indian online store?",
-    a: "Absolutely. Add items from Amazon, Flipkart, Nykaa, Pepperfry, Fabindia, Tata Cliq, or any website — simply paste the product link.",
+    q: "What should I add to a baby shower registry?",
+    a: "Anything you'll genuinely use — diapers, onesies, a baby monitor, a stroller, a crib, feeding bottles, or even a fund toward a bigger item. You can add products from Amazon, FirstCry, Flipkart, or any store by pasting the link.",
   },
   {
-    q: "How do guests buy gifts from my wedding registry?",
-    a: "Share your private registry link. Guests see your wishlist and click directly to the store to purchase — no account needed on their end.",
+    q: "Can relatives abroad gift to my registry?",
+    a: "Yes. Guests anywhere can open your link, see what's needed, and either buy directly from the store or contribute to a cash fund. No account needed on their end.",
   },
   {
-    q: "What happens if two guests want to buy the same gift?",
-    a: "Gifaa marks gifts as purchased in real-time so no two guests accidentally buy the same item.",
+    q: "How do you prevent two people gifting the same item?",
+    a: "Gifaa marks each gift as reserved in real-time, so once someone claims an item it disappears for everyone else. No duplicate strollers, ever.",
   },
 ];
 
-export default function WeddingGiftRegistryPage() {
+export default function BabyShowerGiftRegistryPage() {
   return (
     <div className="min-h-screen bg-surface">
       <script
@@ -111,29 +101,29 @@ export default function WeddingGiftRegistryPage() {
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage:
-                "url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=1600&h=900&fit=crop&q=80')",
+                "url('https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=1600&h=900&fit=crop&q=80')",
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#093a6f]/85 via-[#093a6f]/60 to-transparent" />
           <div className="relative z-10 max-w-screen-xl mx-auto px-6 md:px-8 py-32">
             <div className="max-w-2xl">
               <span className="inline-block text-[#d4a855] font-semibold uppercase tracking-[0.2em] mb-6 text-xs font-sans">
-                Wedding Gift Registry
+                Baby Shower Registry
               </span>
               <h1 className="text-5xl md:text-7xl font-serif text-white leading-[1.1] mb-6 tracking-tight">
-                Your Wedding,
+                Everything Baby Needs,
                 <br />
-                <span className="italic text-[#d4a855]">Your Registry</span>
+                <span className="italic text-[#d4a855]">Nothing You Don&apos;t</span>
               </h1>
               <p className="text-lg md:text-xl text-white/80 font-sans leading-relaxed mb-10 max-w-xl">
-                Create a beautiful wedding gift registry in minutes. Add items from any store, share
-                one link, and let guests shop directly — no middlemen, no fees.
+                Create a beautiful baby shower registry in minutes. Add essentials from any store,
+                share one link, and let loved ones gift exactly what your little one needs.
               </p>
               <Link
-                href="/create-registry?occasion=wedding"
+                href="/create-registry?occasion=baby_shower"
                 className="inline-flex items-center gap-3 bg-[#d4a855] hover:bg-[#c49a45] text-white font-semibold font-sans px-10 py-4 rounded-full text-base transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
               >
-                Create Your Wedding Registry
+                Create Your Baby Shower Registry
                 <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>
                   arrow_forward
                 </span>
@@ -151,10 +141,10 @@ export default function WeddingGiftRegistryPage() {
                   Real Stories
                 </span>
                 <h2 className="text-4xl md:text-5xl font-serif text-[#093a6f] mb-6">
-                  Love, Gifts &amp; Happy Endings
+                  Tiny Feet, Big Celebrations
                 </h2>
                 <p className="text-on-surface-variant font-sans max-w-xl mx-auto">
-                  Real couples. Real registries. Real joy on their wedding day.
+                  Real parents-to-be. Real registries. A welcome made easy.
                 </p>
               </div>
 
@@ -166,21 +156,19 @@ export default function WeddingGiftRegistryPage() {
                       i % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""
                     }`}
                   >
-                    {/* Image */}
                     <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                       <img
                         src={s.image}
-                        alt={`${s.couple}'s wedding registry story`}
+                        alt={`${s.name}'s baby shower registry story`}
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute bottom-5 left-5 bg-white/90 backdrop-blur-sm rounded-xl px-5 py-3">
-                        <p className="text-[#079590f] font-serif font-bold text-sm text-[#093a6f]">
+                        <p className="font-serif font-bold text-sm text-[#093a6f]">
                           {s.highlight}
                         </p>
                       </div>
                     </div>
 
-                    {/* Text */}
                     <div className="space-y-6">
                       <div className="text-[#79590f] opacity-50">
                         <span
@@ -194,7 +182,7 @@ export default function WeddingGiftRegistryPage() {
                         &ldquo;{s.story}&rdquo;
                       </p>
                       <div className="pt-2 border-t border-outline-variant/20">
-                        <h3 className="font-bold font-serif text-[#093a6f] text-lg">{s.couple}</h3>
+                        <h3 className="font-bold font-serif text-[#093a6f] text-lg">{s.name}</h3>
                         <p className="text-xs text-on-surface-variant font-sans uppercase tracking-widest mt-1">
                           {s.location} &middot; {s.year}
                         </p>
@@ -225,19 +213,19 @@ export default function WeddingGiftRegistryPage() {
                     icon: "add_shopping_cart",
                     color: "#093a6f",
                     step: "1. Build",
-                    desc: "Add any item from any store by pasting its link. Mix boutique finds with Amazon favourites — all in one registry.",
+                    desc: "Add nursery essentials, clothing, gear, or a cash fund by pasting links from FirstCry, Amazon, or any store you love.",
                   },
                   {
                     icon: "send",
                     color: "#79590f",
                     step: "2. Share",
-                    desc: "Send your personal registry link on WhatsApp, email, or your wedding invite. Guests need no account to browse.",
+                    desc: "Send your registry link on WhatsApp or with your shower invite. Guests browse instantly — no account required.",
                   },
                   {
                     icon: "favorite",
                     color: "#093a6f",
                     step: "3. Receive",
-                    desc: "Gifts ship directly to your door from the store, or funds arrive instantly via UPI. No delays, no handling.",
+                    desc: "Gifts ship directly to your door, or funds arrive instantly via UPI. Everything updates in real-time.",
                   },
                 ].map((item) => (
                   <div
@@ -288,7 +276,7 @@ export default function WeddingGiftRegistryPage() {
 
         {/* ── Cross-links ── */}
         <RevealWrapper delay={0}>
-          <RegistryCrossLinks currentHref="/wedding-gift-registry" />
+          <RegistryCrossLinks currentHref="/baby-shower-gift-registry" />
         </RevealWrapper>
 
         {/* ── CTA Banner ── */}
@@ -299,16 +287,17 @@ export default function WeddingGiftRegistryPage() {
                 Start Today
               </span>
               <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">
-                Ready to Build Your <span className="italic text-[#d4a855]">Dream Registry?</span>
+                Welcome Your Little One{" "}
+                <span className="italic text-[#d4a855]">the Easy Way</span>
               </h2>
               <p className="text-white/70 font-sans text-lg mb-10 max-w-lg mx-auto">
-                Free to create. Beautiful to share. Your guests will thank you.
+                Free to create. Beautiful to share. Everything baby needs, in one link.
               </p>
               <Link
-                href="/create-registry?occasion=wedding"
+                href="/create-registry?occasion=baby_shower"
                 className="inline-flex items-center gap-3 bg-[#d4a855] hover:bg-[#c49a45] text-white font-semibold font-sans px-12 py-5 rounded-full text-base transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
               >
-                Create Your Wedding Registry — Free
+                Create Your Baby Shower Registry — Free
                 <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>
                   arrow_forward
                 </span>

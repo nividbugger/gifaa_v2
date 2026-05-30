@@ -66,9 +66,9 @@ const HeroSection = () => {
             </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-serif text-[#093a6f] leading-[1.1] mb-8 tracking-tight">
-            Gift Registries For
+            Create Wedding, Baby Shower &amp;
             <br />
-            <span className="italic text-[#79590f]">Life&apos;s Biggest Moments</span>
+            <span className="italic text-[#79590f]">Celebration Registries in India</span>
           </h1>
           <p className="text-lg md:text-xl text-on-surface-variant max-w-lg mb-12 font-sans leading-relaxed min-h-[4rem]">
             {displayed}

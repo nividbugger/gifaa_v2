@@ -3,9 +3,10 @@ import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import RevealWrapper from "@/components/layout/RevealWrapper";
+import RegistryCrossLinks from "@/components/landing/RegistryCrossLinks";
 
 export const metadata: Metadata = {
-  title: "Birthday Gift Registry India – Create Yours Free | Gifaa",
+  title: { absolute: "Birthday Gift Registry India – Create Yours Free | Gifaa" },
   description:
     "Create a beautiful birthday gift registry and let friends & family buy exactly what you want. No duplicates, no unwanted gifts. Free to create on Gifaa.",
   alternates: { canonical: "https://gifaa.in/birthday-gift-registry" },
@@ -283,6 +284,11 @@ export default function BirthdayGiftRegistryPage() {
               </div>
             </div>
           </section>
+        </RevealWrapper>
+
+        {/* ── Cross-links ── */}
+        <RevealWrapper delay={0}>
+          <RegistryCrossLinks currentHref="/birthday-gift-registry" />
         </RevealWrapper>
 
         {/* ── CTA Banner ── */}

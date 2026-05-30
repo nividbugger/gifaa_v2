@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import RegistryCrossLinks from "@/components/landing/RegistryCrossLinks";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "7 Reasons Why Gift Registries Are Replacing Traditional Gifting in India | Gifaa Blog",
+  title: { absolute: "7 Reasons Why Gift Registries Are Replacing Traditional Gifting in India | Gifaa Blog" },
   description:
     "Discover why modern Indian families are switching from traditional gifting to curated gift registries. From UPI to WhatsApp sharing, the shift is real.",
   alternates: { canonical: "https://gifaa.in/blog/gift-registries-replacing-traditional-gifting" },
@@ -214,6 +215,8 @@ export default function GiftRegistriesReplacingTraditionalGiftingBlog() {
             </div>
           </div>
         </article>
+
+        <RegistryCrossLinks />
       </main>
 
       <Footer />

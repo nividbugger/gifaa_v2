@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import Providers from "./providers";
 import AnnouncementBanner from "@/components/layout/AnnouncementBanner";
@@ -21,6 +22,9 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const enableAnalytics = process.env.NODE_ENV === "production" && gaId;
+
   return (
     <html lang="en">
       <head>
@@ -44,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </Providers>
       </body>
+      {enableAnalytics && <GoogleAnalytics gaId={gaId} />}
     </html>
   );
 }

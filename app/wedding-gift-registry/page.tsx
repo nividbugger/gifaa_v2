@@ -27,7 +27,7 @@ const jsonLd = {
   "@type": "WebPage",
   name: "Wedding Gift Registry India",
   description:
-    "Create a beautiful wedding gift registry with Gifaa. Share with guests and receive gifts directly from any store.",
+    "Create a beautiful wedding gift registry with Gifaa. Share with guests and receive gifts directly from any store!",
   url: "https://gifaa.in/wedding-gift-registry",
   breadcrumb: {
     "@type": "BreadcrumbList",

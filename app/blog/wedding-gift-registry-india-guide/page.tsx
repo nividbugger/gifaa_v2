@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import RegistryCrossLinks from "@/components/landing/RegistryCrossLinks";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Wedding Gift Registry in India: The Ultimate Guide for Modern Couples (2026) | Gifaa Blog",
+  title: { absolute: "Wedding Gift Registry in India: The Ultimate Guide for Modern Couples (2026) | Gifaa Blog" },
   description:
     "Everything you need to know about creating a wedding gift registry in India. Avoid duplicates, accept UPI contributions, and share via WhatsApp.",
   alternates: { canonical: "https://gifaa.in/blog/wedding-gift-registry-india-guide" },
@@ -210,6 +211,8 @@ export default function WeddingGiftRegistryIndiaGuideBlog() {
             </div>
           </div>
         </article>
+
+        <RegistryCrossLinks />
       </main>
 
       <Footer />

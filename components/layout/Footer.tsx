@@ -23,13 +23,19 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Product */}
+          {/* Registries */}
           <div>
-            <h4 className="font-serif text-lg font-semibold text-gold mb-4">Product</h4>
+            <h4 className="font-serif text-lg font-semibold text-gold mb-4">Registries</h4>
             <ul className="space-y-3">
-              {["How It Works", "Occasions", "Features", "Pricing"].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-ivory/50 hover:text-gold transition-colors duration-200 text-sm">{item}</a>
+              {[
+                { label: "Wedding Registry", href: "/wedding-gift-registry" },
+                { label: "Baby Shower Registry", href: "/baby-shower-gift-registry" },
+                { label: "Housewarming Registry", href: "/housewarming-gift-registry" },
+                { label: "Anniversary Registry", href: "/anniversary-gift-registry" },
+                { label: "Birthday Registry", href: "/birthday-gift-registry" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} className="text-ivory/50 hover:text-gold transition-colors duration-200 text-sm">{item.label}</a>
                 </li>
               ))}
             </ul>
@@ -40,9 +46,7 @@ const Footer = () => {
             <h4 className="font-serif text-lg font-semibold text-gold mb-4">Company</h4>
             <ul className="space-y-3">
               {[
-                { label: "About Us", href: "#" },
                 { label: "Blog", href: "/blog" },
-                { label: "Careers", href: "#" },
               ].map((item) => (
                 <li key={item.label}>
                   <a href={item.href} className="text-ivory/50 hover:text-gold transition-colors duration-200 text-sm">{item.label}</a>

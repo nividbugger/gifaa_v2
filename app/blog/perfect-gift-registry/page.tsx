@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import RegistryCrossLinks from "@/components/landing/RegistryCrossLinks";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "How to Create the Perfect Gift Registry for Any Occasion | Gifaa Blog",
+  title: { absolute: "How to Create the Perfect Gift Registry for Any Occasion | Gifaa Blog" },
   description:
     "Learn how to build a gift registry for weddings, baby showers, housewarmings and more. Step-by-step guide with tips on gift lists, cash funds, and sharing.",
   alternates: { canonical: "https://gifaa.in/blog/perfect-gift-registry" },
@@ -245,6 +246,8 @@ export default function PerfectGiftRegistryBlog() {
             </div>
           </div>
         </article>
+
+        <RegistryCrossLinks />
       </main>
 
       <Footer />

@@ -18,9 +18,9 @@ import {
 const supabase = getSupabaseBrowserClient();
 
 const occasionImages: Record<OccasionType, string> = {
-  wedding: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=400&fit=crop",
+  wedding: "/indian-wedding-ceremony.png",
   baby_shower: "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=400&fit=crop",
-  housewarming: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=400&fit=crop",
+  housewarming: "/housewarming-gifts-flatlay.png",
   birthday: "https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=600&h=400&fit=crop",
   anniversary: "https://images.unsplash.com/photo-1529636798458-92182e662485?w=600&h=400&fit=crop",
   other: "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=600&h=400&fit=crop",

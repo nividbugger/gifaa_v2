@@ -8,28 +8,28 @@ const occasions = [
     title: "Weddings",
     subtitle: "Direct registries for your big day.",
     href: "/wedding-gift-registry",
-    image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=800&fit=crop&q=80",
+    image: "/occasion-wedding.png",
   },
   {
     id: "baby-shower",
     title: "Baby Showers",
     subtitle: "Get exactly what you need for the little one.",
     href: "/baby-shower-gift-registry",
-    image: "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop&q=80",
+    image: "/occasion-baby-shower.png",
   },
   {
     id: "anniversary",
     title: "Anniversaries",
     subtitle: "The simple way to celebrate years of love.",
     href: "/anniversary-gift-registry",
-    image: "https://images.unsplash.com/photo-1529636798458-92182e662485?w=600&h=800&fit=crop&q=80",
+    image: "/occasion-anniversary.png",
   },
   {
     id: "housewarming",
     title: "Housewarming",
     subtitle: "Direct contributions for your new home.",
     href: "/housewarming-gift-registry",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=800&fit=crop&q=80",
+    image: "/occasion-housewarming.png",
   },
 ];
 

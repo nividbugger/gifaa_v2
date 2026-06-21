@@ -24,6 +24,46 @@ export const metadata: Metadata = {
 
 const blogPosts = [
   {
+    slug: "gift-registry-guide-india",
+    title: "Best Gift Registry Platforms in India (2026): A Complete Guide for Modern Couples",
+    excerpt:
+      "Compare the top gift registry platforms in India — Gifaa, Hazlnut, Kiki, MyRegistry, and Amazon. Find out which one is right for your wedding, housewarming, or baby shower.",
+    category: "Platform Guide",
+    date: "June 21, 2026",
+    readTime: "7 min read",
+    image: "/indian-wedding-couple.png",
+  },
+  {
+    slug: "wedding-registry-vs-cash-gifts",
+    title: "Wedding Registry vs Cash Gifts: What Do Modern Indian Couples Prefer?",
+    excerpt:
+      "Cash, physical gifts, or a registry? We break down what modern Indian couples actually want in 2026 — and which approach gives everyone the best experience.",
+    category: "Wedding Planning",
+    date: "June 22, 2026",
+    readTime: "5 min read",
+    image: "/registry-vs-cash-comparison.png",
+  },
+  {
+    slug: "housewarming-gift-ideas-india",
+    title: "75 Housewarming Gift Ideas in India: Thoughtful Gifts for Every Budget",
+    excerpt:
+      "From Griha Pravesh traditions to smart home gadgets — 75 housewarming gift ideas across every budget to help a house become a home.",
+    category: "Housewarming",
+    date: "June 21, 2026",
+    readTime: "6 min read",
+    image: "/housewarming-gifts-flatlay.png",
+  },
+  {
+    slug: "wedding-gift-ideas-india",
+    title: "101 Wedding Gift Ideas for Indian Couples (2026)",
+    excerpt:
+      "Stuck on what to gift an Indian couple? From practical appliances to luxury experiences, here are 101 ideas across every budget.",
+    category: "Gift Ideas",
+    date: "June 21, 2026",
+    readTime: "6 min read",
+    image: "/indian-wedding-gifts-couple.png",
+  },
+  {
     slug: "wedding-gift-registry-india-guide",
     title: "Wedding Gift Registry in India: The Ultimate Guide for Modern Couples (2026)",
     excerpt:

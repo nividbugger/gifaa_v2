@@ -110,8 +110,7 @@ export default function WeddingGiftRegistryPage() {
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
-              backgroundImage:
-                "url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=1600&h=900&fit=crop&q=80')",
+              backgroundImage: "url('/indian-wedding-ceremony.png')",
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#093a6f]/85 via-[#093a6f]/60 to-transparent" />

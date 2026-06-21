@@ -25,6 +25,13 @@ import type { Database } from "@/lib/supabase/types";
 type Registry = Database["public"]["Tables"]["registries"]["Row"];
 type OccasionType = Database["public"]["Enums"]["occasion_type"];
 
+const defaultHeaderImages: Partial<Record<OccasionType, string>> = {
+  wedding: "/indian-wedding-ceremony.png",
+  housewarming: "/housewarming-gifts-flatlay.png",
+};
+
+const DEFAULT_HEADER = "/indian-wedding-gifts-couple.png";
+
 interface RegistryHeaderProps {
   registry: Registry;
   onUpdate: (updates: Partial<Registry>) => Promise<void>;
@@ -121,7 +128,7 @@ export default function RegistryHeader({ registry, onUpdate, isEditing = false }
       {/* Header Image */}
       <div className="relative h-64 md:h-80 overflow-hidden">
         <img
-          src={registry.header_image_url || "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=1200&h=600&fit=crop"}
+          src={registry.header_image_url || defaultHeaderImages[registry.occasion as OccasionType] || DEFAULT_HEADER}
           alt={registry.title}
           className="w-full h-full object-cover"
         />

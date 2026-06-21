@@ -101,7 +101,7 @@ export default function HousewarmingGiftRegistryPage() {
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage:
-                "url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1600&h=900&fit=crop&q=80')",
+                "url('/housewarming-gifts-flatlay.png')",
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#093a6f]/85 via-[#093a6f]/60 to-transparent" />

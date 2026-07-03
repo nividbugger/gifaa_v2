@@ -282,6 +282,9 @@ export default function PrivacyPolicyPage() {
               <p className="text-charcoal leading-relaxed">
                 Gifaa allows linking to external product websites. We are not responsible for the privacy practices of those third-party platforms. Please review their policies separately.
               </p>
+              <p className="text-charcoal leading-relaxed mt-3">
+                Eligible Amazon product links may be converted into affiliate links, allowing Gifaa to earn a small commission on qualifying purchases. This does not affect the price you or your gift-givers pay.
+              </p>
             </section>
 
             {/* Section 10 */}

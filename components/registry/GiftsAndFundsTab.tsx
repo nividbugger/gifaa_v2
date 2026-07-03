@@ -296,6 +296,9 @@ export default function GiftsAndFundsTab({
                   <p className="text-xs text-charcoal-light">
                     Paste a link from Amazon, Flipkart, or any store and click Auto-fill
                   </p>
+                  <p className="text-xs text-charcoal-light">
+                    Eligible Amazon product links may be converted into affiliate links, allowing Gifaa to earn a small commission on qualifying purchases.
+                  </p>
                 </div>
 
                 {/* Auto-extraction notice */}

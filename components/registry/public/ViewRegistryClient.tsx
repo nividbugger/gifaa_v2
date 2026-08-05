@@ -59,12 +59,11 @@ export default function ViewRegistryClient({
   } | null>(null);
 
   const [copiedAddress, setCopiedAddress] = useState(false);
+  const [showAddress, setShowAddress] = useState(false);
 
   const hasCashFunds = cashFunds.length > 0 || !!registry.upi_id;
   const defaultTab = gifts.length > 0 ? "gifts" : hasCashFunds ? "funds" : "gifts";
   const [activeTab, setActiveTab] = useState<"gifts" | "funds">(defaultTab);
-
-  const isOwner = user && registry && user.id === registry.user_id;
 
   const maxPrice = useMemo(() => {
     const prices = gifts.map((g) => g.price).filter((p): p is number => p !== null);
@@ -237,11 +236,7 @@ export default function ViewRegistryClient({
       )}
 
       <main className="flex-1 pt-16">
-        <RegistryHero
-          registry={registry}
-          isOwner={isOwner ?? false}
-          shareToken={shareToken}
-        />
+        <RegistryHero registry={registry} />
 
         <div className="container mx-auto max-w-6xl px-4 md:px-6 py-8 md:py-12">
 
@@ -427,33 +422,6 @@ export default function ViewRegistryClient({
                   </div>
                 )
               )}
-
-              {/* Shipping address — lives in Gifts tab */}
-              {registry.shipping_address && (
-                <section className="mb-12">
-                  <div className="bg-white rounded-2xl border border-gold/20 p-6 md:p-8 max-w-2xl">
-                    <div className="flex items-start justify-between gap-4 mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
-                          <MapPin className="w-5 h-5 text-gold" />
-                        </div>
-                        <div>
-                          <h3 className="font-serif font-semibold text-royal text-lg">Shipping Address</h3>
-                          <p className="text-sm text-charcoal-light">Send physical gifts here</p>
-                        </div>
-                      </div>
-                      <Button variant="gold-outline" size="sm" onClick={handleCopyAddress}>
-                        {copiedAddress ? (
-                          <><Check className="w-4 h-4 mr-1" />Copied</>
-                        ) : (
-                          <><Copy className="w-4 h-4 mr-1" />Copy</>
-                        )}
-                      </Button>
-                    </div>
-                    <p className="text-charcoal whitespace-pre-line">{registry.shipping_address}</p>
-                  </div>
-                </section>
-              )}
             </div>
           )}
 
@@ -465,6 +433,39 @@ export default function ViewRegistryClient({
               cashFunds={cashFunds}
               registryId={registry.id}
             />
+          )}
+
+          {/* Shipping address — always visible regardless of active tab; discreet by default, one tap to copy */}
+          {registry.shipping_address && (
+            <section className="mb-12">
+              <div className="max-w-md">
+                <div className="flex items-center gap-1.5 bg-white border border-gold/20 rounded-full pl-4 pr-1.5 py-1.5 shadow-soft w-fit">
+                  <MapPin className="w-3.5 h-3.5 text-gold shrink-0" />
+                  <span className="text-xs font-medium text-charcoal-light whitespace-nowrap">
+                    Shipping address
+                  </span>
+                  <button
+                    onClick={() => setShowAddress((v) => !v)}
+                    className="text-xs text-royal hover:text-gold transition-colors px-1.5 whitespace-nowrap"
+                  >
+                    {showAddress ? "Hide" : "View"}
+                  </button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCopyAddress}
+                    className="h-6 w-6 p-0 rounded-full text-charcoal-light hover:text-royal hover:bg-gold/10"
+                  >
+                    {copiedAddress ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  </Button>
+                </div>
+                {showAddress && (
+                  <p className="mt-2 text-xs text-charcoal-light whitespace-pre-line bg-ivory rounded-lg border border-gold/10 px-3 py-2">
+                    {registry.shipping_address}
+                  </p>
+                )}
+              </div>
+            </section>
           )}
 
           {/* Thank you note — always at the bottom */}

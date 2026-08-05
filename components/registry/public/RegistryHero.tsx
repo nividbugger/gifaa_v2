@@ -1,6 +1,4 @@
 import { Calendar, MapPin, Heart } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import type { Database } from "@/lib/supabase/types";
 
 type Registry = Database["public"]["Tables"]["registries"]["Row"];
@@ -34,11 +32,9 @@ const occasionEmojis: Record<string, string> = {
 
 interface RegistryHeroProps {
   registry: Registry;
-  isOwner: boolean;
-  shareToken: string;
 }
 
-export default function RegistryHero({ registry, isOwner, shareToken }: RegistryHeroProps) {
+export default function RegistryHero({ registry }: RegistryHeroProps) {
   const formatDate = (dateString: string | null) => {
     if (!dateString) return null;
     return new Date(dateString).toLocaleDateString("en-IN", {
@@ -90,18 +86,6 @@ export default function RegistryHero({ registry, isOwner, shareToken }: Registry
             </div>
           </div>
         </div>
-        
-        {/* Owner Edit Link */}
-        {isOwner && (
-          <Link
-            href={`/registry/${shareToken}/edit`}
-            className="absolute top-24 right-6"
-          >
-            <Button variant="outline" className="bg-white/95 hover:bg-white shadow-soft">
-              Edit Registry
-            </Button>
-          </Link>
-        )}
       </div>
 
       {/* Personal Message */}

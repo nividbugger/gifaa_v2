@@ -51,6 +51,9 @@ const Header = () => {
             <a href="/search" className="text-on-surface hover:text-[#79590f] transition-colors duration-300 text-sm">
               Find a Registry
             </a>
+            <a href="/recommendations" className="text-on-surface hover:text-[#79590f] transition-colors duration-300 text-sm">
+              Recommendations
+            </a>
             <a href="/#faqs" className="text-on-surface hover:text-[#79590f] transition-colors duration-300 text-sm">
               FAQs
             </a>
@@ -147,6 +150,9 @@ const Header = () => {
           </a>
           <a href="/search" className="block text-on-surface-variant hover:text-[#79590f] transition-colors text-sm font-medium" onClick={() => setMobileMenuOpen(false)}>
             Find a Registry
+          </a>
+          <a href="/recommendations" className="block text-on-surface-variant hover:text-[#79590f] transition-colors text-sm font-medium" onClick={() => setMobileMenuOpen(false)}>
+            Recommendations
           </a>
           <a href="/#faqs" className="block text-on-surface-variant hover:text-[#79590f] transition-colors text-sm font-medium" onClick={() => setMobileMenuOpen(false)}>
             FAQs

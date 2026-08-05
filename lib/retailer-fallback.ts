@@ -32,3 +32,13 @@ export function isPlaceholderImage(imageUrl: string | null | undefined): boolean
   if (!imageUrl) return true;
   return imageUrl.includes("google.com/s2/favicons");
 }
+
+export function isAmazonUrl(productUrl: string | null | undefined): boolean {
+  if (!productUrl) return false;
+  try {
+    const hostname = new URL(productUrl).hostname.toLowerCase();
+    return hostname.includes("amazon.") || hostname.includes("amzn.");
+  } catch {
+    return false;
+  }
+}

@@ -19,7 +19,8 @@ import {
   Check,
   X,
   Sparkles,
-  AlertCircle
+  AlertCircle,
+  RotateCcw
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -30,10 +31,30 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { scrapeProductUrl } from "@/lib/api/product-scraper";
+import { isPlaceholderImage } from "@/lib/retailer-fallback";
+import ProductImageFallback from "@/components/registry/ProductImageFallback";
 import type { Database } from "@/lib/supabase/types";
 
 type Gift = Database["public"]["Tables"]["registry_gifts"]["Row"];
 type CashFund = Database["public"]["Tables"]["cash_funds"]["Row"];
+
+function GiftThumbnail({ gift }: { gift: Gift }) {
+  const [imageError, setImageError] = useState(false);
+  const showImage = gift.product_image_url && !isPlaceholderImage(gift.product_image_url) && !imageError;
+
+  if (!showImage) {
+    return <ProductImageFallback productUrl={gift.product_url} variant="thumb" />;
+  }
+
+  return (
+    <img
+      src={gift.product_image_url ?? undefined}
+      alt={gift.product_name}
+      className="w-16 h-16 object-cover rounded-lg"
+      onError={() => setImageError(true)}
+    />
+  );
+}
 
 interface GiftsAndFundsTabProps {
   registryId: string;
@@ -159,6 +180,29 @@ export default function GiftsAndFundsTab({
     } catch (error) {
       console.error("Error deleting gift:", error);
       toast.error("Failed to remove gift");
+    }
+  };
+
+  const handleUnmarkPurchased = async (giftId: string) => {
+    try {
+      const { error } = await supabase
+        .from("registry_gifts")
+        .update({
+          is_purchased: false,
+          purchased_by_name: null,
+          purchased_by_user_id: null,
+          purchase_message: null,
+          purchased_at: null,
+        })
+        .eq("id", giftId);
+
+      if (error) throw error;
+
+      toast.success("Gift marked as available again");
+      onGiftsChange();
+    } catch (error) {
+      console.error("Error unmarking gift:", error);
+      toast.error("Failed to update gift");
     }
   };
 
@@ -390,17 +434,7 @@ export default function GiftsAndFundsTab({
                     : "bg-ivory border-gold/10"
                 }`}
               >
-                {gift.product_image_url ? (
-                  <img 
-                    src={gift.product_image_url} 
-                    alt={gift.product_name}
-                    className="w-16 h-16 object-cover rounded-lg"
-                  />
-                ) : (
-                  <div className="w-16 h-16 bg-royal/5 rounded-lg flex items-center justify-center">
-                    <Package className="w-6 h-6 text-royal/30" />
-                  </div>
-                )}
+                <GiftThumbnail gift={gift} />
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-charcoal truncate">
                     {gift.product_name}
@@ -412,7 +446,7 @@ export default function GiftsAndFundsTab({
                   )}
                   {gift.is_purchased && (
                     <span className="inline-block text-xs bg-success/20 text-success px-2 py-0.5 rounded-full mt-1">
-                      Purchased
+                      Purchased{gift.purchased_by_name ? ` by ${gift.purchased_by_name}` : ""}
                     </span>
                   )}
                 </div>
@@ -427,7 +461,17 @@ export default function GiftsAndFundsTab({
                       <ExternalLink className="w-4 h-4" />
                     </a>
                   )}
-                  {!gift.is_purchased && (
+                  {gift.is_purchased ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleUnmarkPurchased(gift.id)}
+                      title="Mark as not purchased"
+                      className="text-charcoal-light hover:text-royal hover:bg-royal/10"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                    </Button>
+                  ) : (
                     <Button
                       variant="ghost"
                       size="sm"

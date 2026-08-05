@@ -308,19 +308,16 @@ function extractProductInfo(data: any, originalUrl: string): ProductData {
   }
 
   // Image extraction: deep search entire response payload
+  // If nothing found, result.image stays null — the client renders an
+  // on-brand retailer/Gifaa placeholder instead of a low-res favicon.
   const allImages = deepFindImages(data);
   console.log('Deep image search found', allImages.length, 'images');
-  
+
   if (allImages.length > 0) {
     result.image = upscaleImageUrl(allImages[0]);
   } else {
     const mdImage = extractImageUrl(markdown);
     result.image = mdImage ? upscaleImageUrl(mdImage) : null;
-  }
-  
-  // If still no image, use brand favicon
-  if (!result.image) {
-    result.image = getFaviconUrl(originalUrl);
   }
 
   // Description
@@ -389,15 +386,6 @@ function extractNameFromUrl(url: string): string | null {
   }
 }
 
-function getFaviconUrl(url: string): string {
-  try {
-    const urlObj = new URL(url);
-    return `https://www.google.com/s2/favicons?domain=${urlObj.hostname}&sz=128`;
-  } catch {
-    return 'https://www.google.com/s2/favicons?domain=example.com&sz=128';
-  }
-}
-
 function hasTimedOut(startTime: number): boolean {
   return Date.now() - startTime >= TOTAL_TIMEOUT_MS;
 }
@@ -452,17 +440,17 @@ async function tryFirecrawl(url: string, apiKey: string, startTime: number): Pro
       return { success: false, error: data.error || 'Scraping failed' };
     }
 
-    const productInfo = extractProductInfo(data, url);
-    console.log('Firecrawl extracted:', JSON.stringify(productInfo));
+      const productInfo = extractProductInfo(data, url);
+      console.log('Firecrawl extracted:', JSON.stringify(productInfo));
 
-    // Accept result even with URL-fallback title, as long as we got image or price
-    if (productInfo.title || productInfo.image || productInfo.price) {
-      // Ensure we always have a title
-      if (!productInfo.title) {
-        productInfo.title = extractNameFromUrl(url) || 'Gift Item';
+      // Accept result even with URL-fallback title, as long as we got image or price
+      if (productInfo.title || productInfo.image || productInfo.price) {
+        // Ensure we always have a title
+        if (!productInfo.title) {
+          productInfo.title = extractNameFromUrl(url) || 'Gift Item';
+        }
+        return { success: true, data: productInfo };
       }
-      return { success: true, data: productInfo };
-    }
     
     return { success: false, error: 'no_data' };
   } catch (error) {
@@ -583,7 +571,7 @@ async function tryApify(url: string, apiToken: string, startTime: number): Promi
           
           // Deep search for images in the entire Apify result
           const allImages = deepFindImages(product);
-          let image = allImages.length > 0 ? allImages[0] : getFaviconUrl(url);
+          const image = allImages.length > 0 ? allImages[0] : null;
 
           let title = product.name || product.title || null;
           if (isBadTitle(title)) {
@@ -620,16 +608,15 @@ async function tryApify(url: string, apiToken: string, startTime: number): Promi
 
 function urlFallback(url: string): ScrapeResult {
   console.log('Using URL fallback for:', url);
-  
+
   const title = extractNameFromUrl(url);
-  const image = getFaviconUrl(url);
-  
+
   return {
     success: true,
     data: {
       title: title || 'Gift Item',
       price: null,
-      image,
+      image: null,
       description: null,
     },
     fallback: true,
@@ -670,10 +657,6 @@ Deno.serve(async (req) => {
     if (firecrawlKey && !hasTimedOut(startTime)) {
       const firecrawlResult = await tryFirecrawl(formattedUrl, firecrawlKey, startTime);
       if (firecrawlResult.success && firecrawlResult.data) {
-        // Ensure image fallback
-        if (!firecrawlResult.data.image) {
-          firecrawlResult.data.image = getFaviconUrl(formattedUrl);
-        }
         // Ensure title fallback
         if (isBadTitle(firecrawlResult.data.title)) {
           firecrawlResult.data.title = extractNameFromUrl(formattedUrl) || 'Gift Item';
@@ -692,9 +675,6 @@ Deno.serve(async (req) => {
     if (apifyToken && !hasTimedOut(startTime)) {
       const apifyResult = await tryApify(formattedUrl, apifyToken, startTime);
       if (apifyResult.success && apifyResult.data) {
-        if (!apifyResult.data.image) {
-          apifyResult.data.image = getFaviconUrl(formattedUrl);
-        }
         if (isBadTitle(apifyResult.data.title)) {
           apifyResult.data.title = extractNameFromUrl(formattedUrl) || 'Gift Item';
         }

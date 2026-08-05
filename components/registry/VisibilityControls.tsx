@@ -52,15 +52,22 @@ export default function VisibilityControls({ registry, onUpdate }: VisibilityCon
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const buildShareText = () => {
+    const trimmedMessage = shareMessage.trim();
+    return trimmedMessage.includes(registryUrl)
+      ? trimmedMessage
+      : `${trimmedMessage}\n\n${registryUrl}`;
+  };
+
   const handleWhatsAppShare = () => {
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareMessage)}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(buildShareText())}`;
     window.open(whatsappUrl, "_blank");
   };
 
   const handleEmailShare = () => {
     const subject = encodeURIComponent(`Gift Registry: ${registry.title}`);
-    const body = encodeURIComponent(shareMessage);
-    window.open(`mailto:?subject=${subject}&body=${body}`, "_blank");
+    const body = encodeURIComponent(buildShareText());
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
   return (

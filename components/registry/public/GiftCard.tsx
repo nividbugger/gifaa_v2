@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Gift, Check, ExternalLink, ShoppingBag, Heart } from "lucide-react";
+import { Check, Copy, ExternalLink, ShoppingBag, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import ProductImageFallback from "@/components/registry/ProductImageFallback";
+import { isPlaceholderImage } from "@/lib/retailer-fallback";
 import type { Database } from "@/lib/supabase/types";
 
 type GiftItem = Database["public"]["Tables"]["registry_gifts"]["Row"];
@@ -41,11 +44,18 @@ export default function GiftCard({ gift, onGiftClick }: GiftCardProps) {
   };
 
   const displayName = gift.product_name || (gift.product_url ? extractNameFromUrl(gift.product_url) : "Gift Item");
-  const showImage = gift.product_image_url && !imageError;
+  const showImage = gift.product_image_url && !isPlaceholderImage(gift.product_image_url) && !imageError;
 
   const handleViewProduct = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (gift.product_url) window.open(gift.product_url, "_blank", "noopener,noreferrer");
+  };
+
+  const handleCopyLink = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!gift.product_url) return;
+    await navigator.clipboard.writeText(gift.product_url);
+    toast.success("Item link copied!");
   };
 
   return (
@@ -81,14 +91,7 @@ export default function GiftCard({ gift, onGiftClick }: GiftCardProps) {
             onError={() => setImageError(true)}
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-ivory via-ivory-warm to-gold/5">
-            {/* Decorative mandala placeholder */}
-            <div className="relative flex items-center justify-center">
-              <div className="absolute w-20 h-20 rounded-full border border-gold/20 animate-pulse" />
-              <div className="absolute w-14 h-14 rounded-full border border-gold/15" />
-              <Gift className="w-8 h-8 text-gold/50 relative z-10" />
-            </div>
-          </div>
+          <ProductImageFallback productUrl={gift.product_url} />
         )}
 
         {/* Purchased overlay */}
@@ -135,15 +138,29 @@ export default function GiftCard({ gift, onGiftClick }: GiftCardProps) {
         </h3>
 
         {gift.is_purchased ? (
-          <div className="space-y-1">
-            {gift.purchased_by_name && (
-              <p className="text-xs text-charcoal-light text-center">
-                <span className="text-gold font-medium">{gift.purchased_by_name}</span>
-                {" "}is gifting this 🎁
-              </p>
-            )}
-            {gift.price && (
-              <p className="text-xs text-charcoal/40 text-center">{formatPrice(gift.price)}</p>
+          <div className="space-y-2">
+            <div className="space-y-1">
+              {gift.purchased_by_name && (
+                <p className="text-xs text-charcoal-light text-center">
+                  <span className="text-gold font-medium">{gift.purchased_by_name}</span>
+                  {" "}is gifting this 🎁
+                </p>
+              )}
+              {gift.price && (
+                <p className="text-xs text-charcoal/40 text-center">{formatPrice(gift.price)}</p>
+              )}
+            </div>
+            {gift.product_url && (
+              <div className="flex flex-col gap-1.5">
+                <Button variant="ghost" size="sm" className="w-full h-7 text-xs text-charcoal-light border border-gold/20 hover:border-gold/40 hover:bg-gold/5 rounded-full" onClick={handleViewProduct}>
+                  <ExternalLink className="w-3 h-3 mr-1.5" />
+                  View Item
+                </Button>
+                <Button variant="ghost" size="sm" className="w-full h-7 text-xs text-charcoal-light border border-gold/20 hover:border-gold/40 hover:bg-gold/5 rounded-full" onClick={handleCopyLink}>
+                  <Copy className="w-3 h-3 mr-1.5" />
+                  Copy Link
+                </Button>
+              </div>
             )}
           </div>
         ) : (

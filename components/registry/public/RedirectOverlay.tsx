@@ -61,15 +61,15 @@ export default function RedirectOverlay({
       {/* Close Button */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors"
+        className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-colors"
       >
-        <X className="w-6 h-6" />
+        <X className="w-5 h-5" />
       </button>
 
       <div className="w-full max-w-lg text-center text-white animate-fade-up">
         {/* Icon */}
         <div className="relative inline-block mb-6">
-          <div className="w-20 h-20 rounded-full bg-gold/20 flex items-center justify-center animate-glow">
+          <div className="w-20 h-20 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center animate-glow">
             <Gift className="w-10 h-10 text-gold" />
           </div>
         </div>
@@ -86,7 +86,7 @@ export default function RedirectOverlay({
 
         {/* Countdown Timer */}
         <div className="mb-8">
-          <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-6 py-3 mb-3">
+          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 rounded-full px-6 py-3 mb-3">
             <Clock className="w-5 h-5 text-gold" />
             <span className="text-sm">Redirecting in</span>
             <span className="text-3xl font-bold text-gold tabular-nums">
@@ -94,20 +94,22 @@ export default function RedirectOverlay({
             </span>
             <span className="text-sm">seconds</span>
           </div>
-          
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={handleSkip}
-            className="text-white/70 hover:text-white hover:bg-white/10"
-          >
-            Skip & go now
-            <ExternalLink className="w-4 h-4 ml-1" />
-          </Button>
+
+          <div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleSkip}
+              className="rounded-full text-white/80 hover:text-white hover:bg-white/10"
+            >
+              Skip & go now
+              <ExternalLink className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
         </div>
 
         {/* Important Reminder */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 mb-6 text-left">
+        <div className="bg-white/10 border border-gold/20 backdrop-blur-sm rounded-2xl p-5 mb-6 text-left">
           <h3 className="font-semibold text-gold mb-2 flex items-center gap-2">
             <span className="text-lg">⚡</span>
             Important Reminder
@@ -119,17 +121,17 @@ export default function RedirectOverlay({
 
         {/* Shipping Address */}
         {shippingAddress && (
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 mb-6 text-left">
+          <div className="bg-white/10 border border-gold/20 backdrop-blur-sm rounded-2xl p-5 mb-6 text-left">
             <div className="flex items-start justify-between gap-4 mb-2">
               <h3 className="font-semibold text-gold flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
                 Shipping Address
               </h3>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 size="sm"
                 onClick={handleCopyAddress}
-                className="text-white/70 hover:text-white hover:bg-white/10 -mt-1"
+                className="rounded-full text-white/80 hover:text-white hover:bg-white/10 -mt-1 h-7 px-2"
               >
                 {copiedAddress ? (
                   <>
@@ -151,9 +153,10 @@ export default function RedirectOverlay({
         )}
 
         {/* Cancel Button */}
-        <Button 
-          variant="outline" 
-          className="border-white/30 text-white hover:bg-white/10 hover:border-white/50 [&]:text-white"
+        <Button
+          variant="ghost"
+          size="lg"
+          className="rounded-full bg-white text-royal hover:bg-white/90 shadow-elevated px-8"
           onClick={onClose}
         >
           Cancel & Go Back

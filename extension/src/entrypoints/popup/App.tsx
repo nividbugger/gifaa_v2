@@ -19,6 +19,14 @@ export function App() {
   if (view.status === "loading" || view.status === "refreshing") {
     return <p className="center muted pad">{view.status === "refreshing" ? "Reconnecting…" : "Loading…"}</p>;
   }
+  if (view.status === "error") {
+    return (
+      <Shell>
+        <p className="error">Something went wrong: {view.message}</p>
+        <button className="btn link" onClick={reload}>Try again</button>
+      </Shell>
+    );
+  }
   if (view.status !== "signed-in") return <Shell><SignInPrompt status={view.status} onRetry={reload} /></Shell>;
   if (registryError) return <Shell><p className="error">{registryError}</p><button className="btn link" onClick={reload}>Try again</button></Shell>;
   if (!registries || isReading) return <p className="center muted pad">Reading product…</p>;

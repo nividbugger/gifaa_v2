@@ -5,7 +5,7 @@
 // (its middleware does it on any page load) and re-read the cookie.
 
 import { config, siteOrigins } from "./config";
-import { authCookieBaseName, isExpired, joinAuthCookie, parseSessionCookie, type Session } from "./session";
+import { authCookieBaseName, isExpired, parseSessionCookie, readChunkedCookie, type Session } from "./session";
 
 const REFRESH_TIMEOUT_MS = 12_000;
 const baseName = authCookieBaseName(config.projectRef);
@@ -17,11 +17,11 @@ export type SessionState =
 
 async function readSessionCookie(): Promise<Session | null> {
   for (const origin of siteOrigins()) {
-    const cookies = await browser.cookies.getAll({ url: origin });
-    const raw = joinAuthCookie(cookies.filter((c) => c.name.startsWith(baseName)), baseName);
+    const raw = await readChunkedCookie(baseName, async (name) => (await browser.cookies.get({ url: origin, name }))?.value ?? null);
     const session = raw ? parseSessionCookie(raw) : null;
     if (session) return session;
   }
+  console.debug(`[gifaa] no usable session cookie "${baseName}" at`, siteOrigins());
   return null;
 }
 
@@ -36,7 +36,7 @@ export async function refreshSessionViaSite(): Promise<SessionState> {
   const tab = await browser.tabs.create({ url: `${config.siteUrl}/dashboard`, active: false });
 
   const cookieChanged = new Promise<void>((resolve) => {
-    const listener = (info: { cookie: { name: string } }) => {
+    const listener = (info: { cookie: { name: string; value: string } }) => {
       if (info.cookie.name.startsWith(baseName)) {
         browser.cookies.onChanged.removeListener(listener);
         resolve();

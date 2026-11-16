@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dialog";
 import { scrapeProductUrl } from "@/lib/api/product-scraper";
 import { isPlaceholderImage } from "@/lib/retailer-fallback";
+import { buildGiftInsert } from "@/shared/gift-payload";
 import ProductImageFallback from "@/components/registry/ProductImageFallback";
 import type { Database } from "@/lib/supabase/types";
 
@@ -143,14 +144,15 @@ export default function GiftsAndFundsTab({
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.from("registry_gifts").insert({
-        registry_id: registryId,
-        product_name: giftName.trim(),
-        product_url: giftUrl.trim() || null,
-        price: giftPrice ? parseFloat(giftPrice) : null,
-        notes: giftDescription.trim() || null,
-        product_image_url: giftImageUrl || null,
-      });
+      const { error } = await supabase.from("registry_gifts").insert(
+        buildGiftInsert(registryId, {
+          name: giftName,
+          url: giftUrl,
+          price: giftPrice,
+          notes: giftDescription,
+          imageUrl: giftImageUrl,
+        })
+      );
 
       if (error) throw error;
 

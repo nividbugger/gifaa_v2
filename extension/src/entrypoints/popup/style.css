@@ -1,0 +1,30 @@
+:root {
+  --royal: hsl(212 83% 23%);
+  --gold: hsl(37 42% 54%);
+  --ivory: hsl(47 40% 97%);
+  --charcoal: hsl(218 23% 23%);
+  --charcoal-light: hsl(218 15% 45%);
+  --danger: #b3261e;
+}
+* { box-sizing: border-box; }
+body { margin: 0; width: 360px; background: var(--ivory); color: var(--charcoal); font: 14px/1.4 Inter, system-ui, sans-serif; }
+.shell { padding: 16px; }
+.pad { padding: 32px 16px; }
+.stack { display: flex; flex-direction: column; gap: 12px; }
+.center { text-align: center; align-items: center; }
+.brand { font: 600 20px "Noto Serif", Georgia, serif; color: var(--royal); }
+h2 { margin: 0; font: 600 17px "Noto Serif", Georgia, serif; color: var(--royal); }
+.muted { color: var(--charcoal-light); margin: 0; }
+.small { font-size: 11px; }
+.error { color: var(--danger); margin: 0; }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 500; }
+.field.grow { flex: 1; }
+input, select, textarea { font: inherit; padding: 8px 10px; border: 1px solid #d8d3c4; border-radius: 8px; background: #fff; color: inherit; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
+.product-head { display: flex; gap: 10px; align-items: flex-end; }
+.product-head img, .img-placeholder { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; background: #ece7d8; flex-shrink: 0; }
+.btn { font: 600 14px inherit; padding: 10px 14px; border-radius: 10px; border: 0; cursor: pointer; }
+.btn.primary { background: var(--royal); color: #fff; }
+.btn.primary:hover:not(:disabled) { background: hsl(213 55% 18%); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.link { background: none; color: var(--royal); text-decoration: underline; padding: 4px; font-weight: 500; }

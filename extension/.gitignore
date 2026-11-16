@@ -1,0 +1,11 @@
+node_modules
+.output
+.wxt
+.env
+.env.*
+!.env.example
+*.zip
+# Xcode
+safari/**/xcuserdata
+safari/**/build
+safari/**/DerivedData

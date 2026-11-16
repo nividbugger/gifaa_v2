@@ -1,6 +1,6 @@
 {
   "name": "gifaa-extension",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,12 +8,13 @@
     "dev:edge": "wxt -b edge",
     "build": "wxt build",
     "build:edge": "wxt build -b edge",
-    "build:safari": "wxt build -b safari",
+    "build:safari": "wxt build -b safari --mv3",
     "zip": "wxt zip",
     "zip:edge": "wxt zip -b edge",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "postinstall": "wxt prepare"
+    "postinstall": "wxt prepare",
+    "safari:convert": "wxt build -b safari --mv3 && xcrun safari-web-extension-converter .output/safari-mv3 --project-location safari --app-name Gifaa --bundle-identifier in.gifaa.extension --swift --copy-resources --no-open --no-prompt --force"
   },
   "dependencies": {
     "react": "^18.3.1",

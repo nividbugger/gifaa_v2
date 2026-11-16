@@ -1,8 +1,6 @@
 import { defineConfig } from "wxt";
 import path from "node:path";
-
-// Dev builds also need to read the session cookie from the local Next.js server.
-const isDev = process.env.NODE_ENV !== "production";
+import { loadEnv } from "vite";
 
 export default defineConfig({
   srcDir: "src",
@@ -14,19 +12,26 @@ export default defineConfig({
   vite: () => ({
     resolve: { alias: { "@shared": path.resolve(__dirname, "../shared") } },
   }),
-  manifest: {
-    name: "Gifaa – Add to Registry",
-    description: "Add any product you're browsing to your Gifaa gift registry in one click.",
-    // activeTab + scripting: read the product on the page the user explicitly opened us on.
-    // cookies: reuse the user's gifaa.in login instead of building a second sign-in.
-    permissions: ["activeTab", "scripting", "cookies", "storage"],
-    host_permissions: [
-      "https://gifaa.in/*",
-      "https://www.gifaa.in/*",
-      "https://*.supabase.co/*",
-      ...(isDev ? ["http://localhost/*"] : []),
-    ],
-    icons: { 16: "icon/16.png", 32: "icon/32.png", 48: "icon/48.png", 96: "icon/96.png", 128: "icon/128.png" },
-    action: { default_title: "Add to Gifaa registry" },
+  manifest: ({ mode }) => {
+    const env = loadEnv(mode, __dirname, "WXT_");
+    // Dev builds also need to read the session cookie from the local Next.js server.
+    const isDev = mode !== "production";
+    if (!env.WXT_SUPABASE_URL) throw new Error(`WXT_SUPABASE_URL is not set for mode "${mode}" (see .env.example)`);
+
+    return {
+      name: "Gifaa – Add to Registry",
+      description: "Add any product you're browsing to your Gifaa gift registry in one click.",
+      // activeTab + scripting: read the product on the page the user explicitly opened us on.
+      // cookies: reuse the user's gifaa.in login instead of building a second sign-in.
+      permissions: ["activeTab", "scripting", "cookies", "storage"],
+      host_permissions: [
+        "https://gifaa.in/*",
+        "https://www.gifaa.in/*",
+        `${new URL(env.WXT_SUPABASE_URL).origin}/*`,
+        ...(isDev ? ["http://localhost/*"] : []),
+      ],
+      icons: { 16: "icon/16.png", 32: "icon/32.png", 48: "icon/48.png", 96: "icon/96.png", 128: "icon/128.png" },
+      action: { default_title: "Add to Gifaa registry" },
+    };
   },
 });

@@ -5,3 +5,7 @@ node_modules
 .env.*
 !.env.example
 *.zip
+# Xcode
+safari/**/xcuserdata
+safari/**/build
+safari/**/DerivedData

@@ -297,7 +297,36 @@ export default function PrivacyPolicyPage() {
 
             {/* Section 11 */}
             <section>
-              <h2 className="text-xl font-serif font-semibold text-royal mb-3">11. Changes to This Policy</h2>
+              <h2 className="text-xl font-serif font-semibold text-royal mb-3">11. Gifaa Browser Extension</h2>
+              <p className="text-charcoal leading-relaxed mb-3">
+                The Gifaa browser extension (Chrome, Edge and Safari) lets you add the product you are viewing to one of your registries. It only acts when you click its icon. This section describes what it accesses:
+              </p>
+              <ul className="space-y-2 ml-6">
+                <li className="text-charcoal flex items-start gap-2">
+                  <span className="text-gold font-bold mt-1">•</span>
+                  <span><strong>Your Gifaa login session.</strong> The extension reads the Gifaa sign-in cookie set by gifaa.in so you do not have to sign in twice. It is used only to identify you to Gifaa&apos;s servers when loading your registries and saving a gift. We do not read any other site&apos;s cookies.</span>
+                </li>
+                <li className="text-charcoal flex items-start gap-2">
+                  <span className="text-gold font-bold mt-1">•</span>
+                  <span><strong>The page you are viewing.</strong> When you click the icon, the extension reads that page&apos;s product name, price, image, description and web address to pre-fill the gift form. It does not run on pages in the background, does not read other tabs, and does not record or store your browsing history.</span>
+                </li>
+                <li className="text-charcoal flex items-start gap-2">
+                  <span className="text-gold font-bold mt-1">•</span>
+                  <span><strong>Product lookup.</strong> If the page does not expose all product details, the page address is sent to Gifaa&apos;s product lookup service to fill in the gaps.</span>
+                </li>
+                <li className="text-charcoal flex items-start gap-2">
+                  <span className="text-gold font-bold mt-1">•</span>
+                  <span><strong>Local settings.</strong> The extension remembers your last-used registry in your browser&apos;s local extension storage. It never leaves your device.</span>
+                </li>
+              </ul>
+              <p className="text-charcoal leading-relaxed mt-3">
+                Information from the extension is used only to add gifts to your registry. We do not sell it, use it for advertising or to determine creditworthiness, or share it with third parties other than the service providers described in this policy. Eligible Amazon product links may be converted into affiliate links, allowing Gifaa to earn a small commission on qualifying purchases. The extension does not load or run remotely hosted code. You can remove it at any time from your browser&apos;s extensions page.
+              </p>
+            </section>
+
+            {/* Section 12 */}
+            <section>
+              <h2 className="text-xl font-serif font-semibold text-royal mb-3">12. Changes to This Policy</h2>
               <p className="text-charcoal leading-relaxed">
                 We may update this Privacy Policy from time to time. Updates will be posted on this page with a revised effective date.
               </p>

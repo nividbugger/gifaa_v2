@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { authCookieBaseName, isExpired, joinAuthCookie, parseSessionCookie } from "./session";
+import { isExpired, parseSessionCookie, readChunkedCookie } from "./session";
 
 const payload = { access_token: "tok", expires_at: 2_000_000_000, user: { id: "u1" } };
 const b64url = (s: string) => btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -20,11 +20,15 @@ describe("session cookie", () => {
     expect(parseSessionCookie(JSON.stringify({ access_token: "x" }))).toBeNull();
   });
 
-  it("joins chunks in numeric order, not lexical", () => {
-    const base = authCookieBaseName("abc");
-    const chunks = Array.from({ length: 11 }, (_, i) => ({ name: `${base}.${i}`, value: String.fromCharCode(97 + i) }));
-    expect(joinAuthCookie([...chunks].reverse(), base)).toBe("abcdefghijk");
-    expect(joinAuthCookie([], base)).toBeNull();
+  it("reads chunks by point lookup in order, stopping at the first gap", async () => {
+    const jar: Record<string, string> = { "b.0": "ab", "b.1": "cd", "b.2": "ef", "b.4": "NOPE", other: "x" };
+    const get = async (name: string) => jar[name] ?? null;
+    expect(await readChunkedCookie("b", get)).toBe("abcdef");
+    expect(await readChunkedCookie("missing", get)).toBeNull();
+  });
+
+  it("prefers an unchunked cookie when present", async () => {
+    expect(await readChunkedCookie("b", async (n) => (n === "b" ? "whole" : "chunk"))).toBe("whole");
   });
 
   it("treats near-expiry as expired", () => {

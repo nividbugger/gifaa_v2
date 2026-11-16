@@ -4,7 +4,17 @@ import { getSessionState, type SessionState } from "@/core/session-source";
 import { readActiveTabProduct, scrapeMissing } from "@/core/page-product";
 import { lastRegistryId } from "@/core/storage";
 
-export type SessionView = SessionState | { status: "loading" } | { status: "refreshing" };
+export type SessionView = SessionState | { status: "loading" } | { status: "refreshing" } | { status: "error"; message: string };
+
+const SESSION_TIMEOUT_MS = 20_000;
+
+/** Rejects instead of hanging forever, so a stuck browser call surfaces as an error the user can see. */
+function withTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`${label} timed out`)), SESSION_TIMEOUT_MS);
+    promise.then(resolve, reject).finally(() => clearTimeout(timer));
+  });
+}
 
 /** Resolves the website session, transparently asking the site to refresh an expired token once. */
 export function useSession() {
@@ -12,12 +22,17 @@ export function useSession() {
 
   const load = useCallback(async () => {
     setView({ status: "loading" });
-    let state = await getSessionState();
-    if (state.status === "expired") {
-      setView({ status: "refreshing" });
-      state = (await browser.runtime.sendMessage({ type: "refresh-session" })) as SessionState;
+    try {
+      let state = await withTimeout(getSessionState(), "Reading your Gifaa login");
+      if (state.status === "expired") {
+        setView({ status: "refreshing" });
+        state = (await withTimeout(browser.runtime.sendMessage({ type: "refresh-session" }), "Reconnecting")) as SessionState;
+      }
+      setView(state);
+    } catch (e) {
+      console.error("[gifaa] session check failed", e);
+      setView({ status: "error", message: e instanceof Error ? e.message : String(e) });
     }
-    setView(state);
   }, []);
 
   useEffect(() => {

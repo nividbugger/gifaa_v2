@@ -16,6 +16,10 @@ export default defineConfig({
     const env = loadEnv(mode, __dirname, "WXT_");
     // Dev builds also need to read the session cookie from the local Next.js server.
     const isDev = mode !== "production";
+    // A WXT_* variable exported in the shell overrides .env.production, so guard against shipping a dev URL.
+    if (!isDev && /localhost|127\.0\.0\.1/.test(env.WXT_SITE_URL ?? "")) {
+      throw new Error(`Refusing production build: WXT_SITE_URL is "${env.WXT_SITE_URL}". Unset WXT_* shell variables (env | grep WXT) and rebuild.`);
+    }
     if (!env.WXT_SUPABASE_URL) throw new Error(`WXT_SUPABASE_URL is not set for mode "${mode}" (see .env.example)`);
 
     return {

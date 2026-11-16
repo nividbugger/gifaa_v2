@@ -8,11 +8,6 @@ export interface Session {
   expiresAt: number;
 }
 
-export interface CookieLike {
-  name: string;
-  value: string;
-}
-
 const BASE64_PREFIX = "base64-";
 const EXPIRY_SKEW_SECONDS = 60;
 
@@ -20,17 +15,24 @@ export function authCookieBaseName(projectRef: string): string {
   return `sb-${projectRef}-auth-token`;
 }
 
-/** Reassembles chunked cookies (`<base>.0`, `<base>.1`, …) or returns the single `<base>` cookie. */
-export function joinAuthCookie(cookies: CookieLike[], baseName: string): string | null {
-  const single = cookies.find((c) => c.name === baseName);
-  if (single) return single.value;
+/**
+ * Reads a possibly-chunked cookie by exact name (`<base>`, else `<base>.0`, `<base>.1`, … until one is missing),
+ * mirroring @supabase/ssr. Uses point lookups because `cookies.getAll` can return nothing for some sites.
+ */
+export async function readChunkedCookie(
+  baseName: string,
+  getValue: (name: string) => Promise<string | null>
+): Promise<string | null> {
+  const single = await getValue(baseName);
+  if (single) return single;
 
-  const chunks = cookies
-    .map((c) => ({ c, match: c.name.match(new RegExp(`^${baseName}\\.(\\d+)$`)) }))
-    .filter((x) => x.match)
-    .sort((a, b) => Number(a.match![1]) - Number(b.match![1]));
-
-  return chunks.length ? chunks.map((x) => x.c.value).join("") : null;
+  const chunks: string[] = [];
+  for (let i = 0; ; i++) {
+    const chunk = await getValue(`${baseName}.${i}`);
+    if (!chunk) break;
+    chunks.push(chunk);
+  }
+  return chunks.length ? chunks.join("") : null;
 }
 
 function decodeBase64Url(input: string): string {

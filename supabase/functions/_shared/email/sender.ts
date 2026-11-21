@@ -23,6 +23,18 @@ export interface EmailSender {
   send(message: EmailMessage): Promise<void>;
 }
 
+/** Secrets pasted from a terminal often carry quotes or stray whitespace; the provider just says "invalid". */
+export function normalizeApiKey(raw: string | undefined): string | undefined {
+  const key = raw?.trim().replace(/^["'`]+|["'`]+$/g, "").trim();
+  return key || undefined;
+}
+
+/** First 4 bytes of SHA-256 as hex: enough to compare two keys, useless for recovering one. */
+export async function keyFingerprint(key: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(key));
+  return [...new Uint8Array(digest).slice(0, 4)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 /** Thrown on HTTP 429 so callers can wait and retry instead of treating it as a hard failure. */
 export class RateLimitError extends Error {
   readonly retryAfterMs: number;
@@ -42,7 +54,8 @@ export interface SenderConfig {
  * Resend (https://resend.com). The From address usually has no mailbox behind it, so
  * `replyTo` is what makes replies reach a real inbox.
  */
-export function createResendSender({ apiKey, from, replyTo }: SenderConfig): EmailSender {
+export function createResendSender({ apiKey: rawApiKey, from, replyTo }: SenderConfig): EmailSender {
+  const apiKey = normalizeApiKey(rawApiKey);
   return {
     configured: !!apiKey,
     async send(message) {
@@ -62,6 +75,11 @@ export function createResendSender({ apiKey, from, replyTo }: SenderConfig): Ema
       if (response.status === 429) {
         const seconds = Number(response.headers.get("retry-after"));
         throw new RateLimitError(Number.isFinite(seconds) && seconds > 0 ? Math.ceil(seconds * 1000) : 1000);
+      }
+      if (response.status === 401) {
+        // The key the function actually holds is the usual suspect, so say how to recognise it (length + a short
+        // fingerprint, never the key) and the operator can compare it with the key they tested.
+        throw new Error(`Resend 401: ${await response.text()} [key held by this function: ${apiKey.length} chars, sha256 starts ${await keyFingerprint(apiKey)}]`);
       }
       if (!response.ok) throw new Error(`Resend ${response.status}: ${await response.text()}`);
     },

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createEmailSenderFromEnv, createResendSender, sendBatch, siteUrlFromEnv, type EmailMessage } from "./sender.ts";
+import { RateLimitError, createEmailSenderFromEnv, createResendSender, sendBatch, siteUrlFromEnv, type EmailMessage } from "./sender.ts";
 import { escapeHtml, renderEmail } from "./layout.ts";
 
 type Fetch = typeof fetch;
@@ -57,28 +57,67 @@ test("env wiring: key enables it, defaults apply, overrides win", async () => {
   assert.equal(siteUrlFromEnv(env({ SITE_URL: "https://www.gifaa.in/" })), "https://www.gifaa.in");
 });
 
+const noSleep = { sleep: async () => {} };
+
 test("sendBatch counts successes and failures, and a failure doesn't stop the rest", async () => {
   const sent: string[] = [];
   const sender = { configured: true, send: async (m: EmailMessage) => { if (m.to.startsWith("bad")) throw new Error("boom"); sent.push(m.to); } };
-  const result = await sendBatch(sender, ["a@x.co", "bad1@x.co", "b@x.co", "bad2@x.co", "c@x.co"].map(msg));
-  assert.deepEqual(result, { sent: 3, failed: 2 });
-  assert.deepEqual(sent.sort(), ["a@x.co", "b@x.co", "c@x.co"]);
+  const result = await sendBatch(sender, ["a@x.co", "bad1@x.co", "b@x.co", "bad2@x.co", "c@x.co"].map(msg), noSleep);
+  assert.deepEqual({ sent: result.sent, failed: result.failed }, { sent: 3, failed: 2 });
+  assert.deepEqual(sent, ["a@x.co", "b@x.co", "c@x.co"], "sent in order, one at a time");
 });
 
-test("sendBatch never exceeds the concurrency limit and handles an empty list", async () => {
-  let active = 0, peak = 0;
-  const sender = { configured: true, send: async () => { peak = Math.max(peak, ++active); await new Promise((r) => setTimeout(r, 5)); active--; } };
-  const result = await sendBatch(sender, Array.from({ length: 20 }, (_, i) => msg(`p${i}@x.co`)), 3);
-  assert.equal(result.sent, 20);
-  assert.ok(peak <= 3 && peak >= 2, `peak concurrency was ${peak}`);
-  assert.deepEqual(await sendBatch(sender, []), { sent: 0, failed: 0 });
+test("sendBatch reports WHY things failed: distinct reasons, capped at 3", async () => {
+  const reasons = ["Resend 403: domain not verified", "Resend 403: domain not verified", "Resend 422: invalid to", "x".repeat(300), "four", "five"];
+  let i = 0;
+  const sender = { configured: true, send: async () => { throw new Error(reasons[i++]); } };
+  const result = await sendBatch(sender, reasons.map((_, n) => msg(`p${n}@x.co`)), noSleep);
+  assert.equal(result.failed, 6);
+  assert.equal(result.errors.length, 3);
+  assert.deepEqual(result.errors.slice(0, 2), ["Resend 403: domain not verified", "Resend 422: invalid to"]);
+  assert.ok(result.errors[2]!.length <= 160, "long reasons are truncated");
 });
 
-test("sendBatch doesn't put full recipient addresses in logs", async () => {
+test("sendBatch paces sends under the provider's rate limit", async () => {
+  const sleeps: number[] = [];
+  const result = await sendBatch({ configured: true, send: async () => {} }, ["a", "b", "c", "d"].map((n) => msg(`${n}@x.co`)), { minIntervalMs: 600, sleep: async (ms) => { sleeps.push(ms); } });
+  assert.equal(result.sent, 4);
+  assert.deepEqual(sleeps, [600, 600, 600], "a gap between sends, none before the first or after the last");
+});
+
+test("sendBatch waits and retries on a rate limit, then succeeds", async () => {
+  let calls = 0;
+  const sleeps: number[] = [];
+  const sender = { configured: true, send: async () => { if (++calls < 3) throw new RateLimitError(1500); } };
+  const result = await sendBatch(sender, [msg("a@x.co")], { sleep: async (ms) => { sleeps.push(ms); } });
+  assert.deepEqual({ sent: result.sent, failed: result.failed }, { sent: 1, failed: 0 });
+  assert.equal(calls, 3);
+  assert.deepEqual(sleeps, [1500, 1500], "honours the provider's retry-after");
+});
+
+test("sendBatch gives up after maxRetries and says it was rate limiting", async () => {
+  let calls = 0;
+  const sender = { configured: true, send: async () => { calls++; throw new RateLimitError(100); } };
+  const result = await sendBatch(sender, [msg("a@x.co")], { maxRetries: 2, ...noSleep });
+  assert.equal(calls, 3, "1 try + 2 retries");
+  assert.equal(result.failed, 1);
+  assert.match(result.errors[0]!, /Rate limited/);
+});
+
+test("the Resend sender turns a 429 into a RateLimitError using Retry-After", async () => {
+  mockFetch(() => new Response("slow down", { status: 429, headers: { "retry-after": "2" } }));
+  const sender = createResendSender({ apiKey: "k", from: "f" });
+  await assert.rejects(sender.send(msg("a@b.co")), (e: unknown) => e instanceof RateLimitError && e.retryAfterMs === 2000);
+  mockFetch(() => new Response("slow down", { status: 429 }));
+  await assert.rejects(sender.send(msg("a@b.co")), (e: unknown) => e instanceof RateLimitError && e.retryAfterMs === 1000, "default when the header is missing");
+});
+
+test("sendBatch handles an empty list and doesn't put full recipient addresses in logs", async () => {
+  assert.deepEqual(await sendBatch({ configured: true, send: async () => {} }, [], noSleep), { sent: 0, failed: 0, errors: [] });
   const logged: unknown[][] = [];
   const original = console.error;
   console.error = (...args: unknown[]) => { logged.push(args); };
-  try { await sendBatch({ configured: true, send: async () => { throw new Error("x"); } }, [msg("someone@example.com")]); } finally { console.error = original; }
+  try { await sendBatch({ configured: true, send: async () => { throw new Error("x"); } }, [msg("someone@example.com")], noSleep); } finally { console.error = original; }
   assert.ok(!JSON.stringify(logged).includes("someone@example.com"));
 });
 

@@ -23,6 +23,15 @@ export interface EmailSender {
   send(message: EmailMessage): Promise<void>;
 }
 
+/** Thrown on HTTP 429 so callers can wait and retry instead of treating it as a hard failure. */
+export class RateLimitError extends Error {
+  readonly retryAfterMs: number;
+  constructor(retryAfterMs: number) {
+    super(`Rate limited by the email provider (retry in ${retryAfterMs}ms)`);
+    this.retryAfterMs = retryAfterMs;
+  }
+}
+
 export interface SenderConfig {
   apiKey: string | undefined;
   from: string;
@@ -50,6 +59,10 @@ export function createResendSender({ apiKey, from, replyTo }: SenderConfig): Ema
           ...((message.replyTo ?? replyTo) && { reply_to: message.replyTo ?? replyTo }),
         }),
       });
+      if (response.status === 429) {
+        const seconds = Number(response.headers.get("retry-after"));
+        throw new RateLimitError(Number.isFinite(seconds) && seconds > 0 ? Math.ceil(seconds * 1000) : 1000);
+      }
       if (!response.ok) throw new Error(`Resend ${response.status}: ${await response.text()}`);
     },
   };
@@ -72,25 +85,50 @@ export function siteUrlFromEnv(env: { get(name: string): string | undefined }): 
 export interface BatchResult {
   sent: number;
   failed: number;
+  /** Up to 3 distinct failure reasons, so callers can show *why* instead of just "failed". */
+  errors: string[];
 }
 
-/** Sends many messages with bounded concurrency. One failure never stops the rest. */
-export async function sendBatch(sender: EmailSender, messages: readonly EmailMessage[], concurrency = 5): Promise<BatchResult> {
-  const queue = [...messages];
-  const result: BatchResult = { sent: 0, failed: 0 };
+export interface BatchOptions {
+  /** Gap between sends. Resend's default limit is 2 requests/second, so stay under it. */
+  minIntervalMs?: number;
+  /** Retries per message when the provider says "slow down" (429). */
+  maxRetries?: number;
+  /** Injectable so tests don't really wait. */
+  sleep?: (ms: number) => Promise<void>;
+}
 
-  const worker = async () => {
-    for (let message = queue.shift(); message; message = queue.shift()) {
+const MAX_REPORTED_ERRORS = 3;
+const defaultSleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Sends messages one at a time, paced under the provider's rate limit, retrying when told to slow down.
+ * One failure never stops the rest, and the distinct reasons are reported back.
+ */
+export async function sendBatch(sender: EmailSender, messages: readonly EmailMessage[], options: BatchOptions = {}): Promise<BatchResult> {
+  const { minIntervalMs = 600, maxRetries = 3, sleep = defaultSleep } = options;
+  const result: BatchResult = { sent: 0, failed: 0, errors: [] };
+
+  for (const [index, message] of messages.entries()) {
+    if (index > 0) await sleep(minIntervalMs);
+
+    for (let attempt = 0; ; attempt++) {
       try {
         await sender.send(message);
         result.sent++;
+        break;
       } catch (error) {
+        if (error instanceof RateLimitError && attempt < maxRetries) {
+          await sleep(error.retryAfterMs);
+          continue;
+        }
         console.error("email failed", message.to.replace(/^(.).*(@.*)$/, "$1***$2"), error);
         result.failed++;
+        const reason = (error instanceof Error ? error.message : String(error)).slice(0, 160);
+        if (result.errors.length < MAX_REPORTED_ERRORS && !result.errors.includes(reason)) result.errors.push(reason);
+        break;
       }
     }
-  };
-
-  await Promise.all(Array.from({ length: Math.min(concurrency, queue.length) }, worker));
+  }
   return result;
 }

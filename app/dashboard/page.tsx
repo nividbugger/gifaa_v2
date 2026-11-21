@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import PhoneNumberDialog from "@/components/auth/PhoneNumberDialog";
+import SantaPromo from "@/features/secret-santa/components/SantaPromo"; // seasonal: remove with features/secret-santa
 
 const supabase = getSupabaseBrowserClient();
 
@@ -160,6 +161,8 @@ export default function DashboardPage() {
             </h1>
             <p className="text-charcoal-light text-lg">Manage your gift registries and track contributions</p>
           </div>
+
+          <SantaPromo className="mb-8" />
 
           <div className="mb-8">
             <Link href="/create-registry">

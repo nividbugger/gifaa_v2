@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { safeRedirectPath } from "@/lib/auth/redirect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +12,14 @@ import { Gift, Loader2, Mail, User } from "lucide-react";
 import { toast } from "sonner";
 
 export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-ivory flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-royal" /></div>}>
+      <SignupInner />
+    </Suspense>
+  );
+}
+
+function SignupInner() {
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,12 +29,13 @@ export default function SignupPage() {
 
   const { signUp, signInWithGoogle, user, isLoading: authLoading } = useAuth();
   const router = useRouter();
+  const redirectTo = safeRedirectPath(useSearchParams().get("redirect"));
 
   useEffect(() => {
     if (!authLoading && user) {
-      router.replace("/dashboard");
+      router.replace(redirectTo);
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, router, redirectTo]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +65,7 @@ export default function SignupPage() {
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
-    const { error } = await signInWithGoogle();
+    const { error } = await signInWithGoogle(redirectTo);
 
     if (error) {
       toast.error(error.message || "Failed to sign in with Google");
@@ -192,7 +202,7 @@ export default function SignupPage() {
 
             <p className="text-center mt-4 text-charcoal-light">
               Already have an account?{" "}
-              <Link href="/login" className="text-royal font-medium hover:text-royal/80 transition-colors">
+              <Link href={`/login?redirect=${encodeURIComponent(redirectTo)}`} className="text-royal font-medium hover:text-royal/80 transition-colors">
                 Sign in
               </Link>
             </p>

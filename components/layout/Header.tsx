@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import SantaNavLink from "@/features/secret-santa/components/SantaNavLink"; // seasonal: remove with features/secret-santa
 
 const Header = () => {
   const { user, profile, signOut, isLoading } = useAuth();
@@ -42,6 +43,7 @@ const Header = () => {
             <img alt="Gifaa" className="h-11 w-auto group-hover:scale-105 transition-transform duration-300" src="/gifaa-logo.png" />
           </Link>
           <nav className="hidden md:flex items-center gap-6 font-serif tracking-tight">
+            <SantaNavLink variant="desktop" />
             <a href="/#occasions" className="text-on-surface hover:text-[#79590f] transition-colors duration-300 text-sm">
               Occasions
             </a>
@@ -142,6 +144,7 @@ const Header = () => {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-surface border-t border-outline-variant/20 px-6 py-4 space-y-4">
+          <SantaNavLink variant="mobile" onNavigate={() => setMobileMenuOpen(false)} />
           <a href="/#occasions" className="block text-on-surface-variant hover:text-[#79590f] transition-colors text-sm font-medium" onClick={() => setMobileMenuOpen(false)}>
             Occasions
           </a>

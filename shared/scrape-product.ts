@@ -12,6 +12,8 @@ export interface ScrapeResponse {
   success: boolean;
   error?: string;
   data?: ProductData;
+  /** True when the scraper was blocked and only guessed a title from the URL (no image or price). */
+  fallback?: boolean;
 }
 
 export interface SupabaseConfig {

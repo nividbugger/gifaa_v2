@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { User, Session, AuthError } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { rememberPostLoginPath } from "@/lib/auth/redirect";
 
 const supabase = getSupabaseBrowserClient();
 
@@ -20,7 +21,8 @@ interface AuthContextType {
   isLoading: boolean;
   signUp: (email: string, password: string, displayName?: string) => Promise<{ error: AuthError | null }>;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signInWithGoogle: () => Promise<{ error: Error | AuthError | null }>;
+  /** `next`: same-site path to open after the Google round-trip (carried in a short-lived cookie). */
+  signInWithGoogle: (next?: string) => Promise<{ error: Error | AuthError | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
@@ -128,8 +130,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error };
   };
 
-  const signInWithGoogle = async (): Promise<{ error: Error | AuthError | null }> => {
+  const signInWithGoogle = async (next?: string): Promise<{ error: Error | AuthError | null }> => {
     try {
+      if (next) rememberPostLoginPath(next);
       const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/auth/callback`;
 
       const { error } = await supabase.auth.signInWithOAuth({

@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { safeRedirectPath } from "@/lib/auth/redirect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,7 +28,7 @@ function LoginInner() {
   const { signIn, signInWithGoogle, user, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/dashboard";
+  const redirectTo = safeRedirectPath(searchParams.get("redirect"));
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -59,7 +60,7 @@ function LoginInner() {
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
-    const { error } = await signInWithGoogle();
+    const { error } = await signInWithGoogle(redirectTo);
 
     if (error) {
       toast.error(error.message || "Failed to sign in with Google");
@@ -163,7 +164,7 @@ function LoginInner() {
 
             <p className="text-center mt-6 text-charcoal-light">
               Don&apos;t have an account?{" "}
-              <Link href="/signup" className="text-royal font-medium hover:text-royal/80 transition-colors">
+              <Link href={`/signup?redirect=${encodeURIComponent(redirectTo)}`} className="text-royal font-medium hover:text-royal/80 transition-colors">
                 Sign up
               </Link>
             </p>

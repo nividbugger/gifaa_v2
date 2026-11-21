@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { RateLimitError, createEmailSenderFromEnv, createResendSender, sendBatch, siteUrlFromEnv, type EmailMessage } from "./sender.ts";
+import { createHash } from "node:crypto";
+import { RateLimitError, createEmailSenderFromEnv, createResendSender, keyFingerprint, normalizeApiKey, sendBatch, siteUrlFromEnv, type EmailMessage } from "./sender.ts";
 import { escapeHtml, renderEmail } from "./layout.ts";
 
 type Fetch = typeof fetch;
@@ -119,6 +120,31 @@ test("sendBatch handles an empty list and doesn't put full recipient addresses i
   console.error = (...args: unknown[]) => { logged.push(args); };
   try { await sendBatch({ configured: true, send: async () => { throw new Error("x"); } }, [msg("someone@example.com")], noSleep); } finally { console.error = original; }
   assert.ok(!JSON.stringify(logged).includes("someone@example.com"));
+});
+
+test("API keys pasted with quotes or whitespace are cleaned before use", async () => {
+  for (const messy of ['re_abc123', ' re_abc123 ', '"re_abc123"', "'re_abc123'", ' "re_abc123"\n', '`re_abc123`']) {
+    assert.equal(normalizeApiKey(messy), "re_abc123", JSON.stringify(messy));
+  }
+  assert.equal(normalizeApiKey(""), undefined);
+  assert.equal(normalizeApiKey('  ""  '), undefined);
+  assert.equal(normalizeApiKey(undefined), undefined);
+
+  const calls = mockFetch(() => new Response("{}"));
+  await createResendSender({ apiKey: ' "re_abc123"\n', from: "f" }).send(msg("a@b.co"));
+  assert.equal((calls[0]!.init.headers as Record<string, string>).Authorization, "Bearer re_abc123");
+  assert.equal(createEmailSenderFromEnv(env({ RESEND_API_KEY: '""' })).configured, false, "an empty quoted key counts as not configured");
+});
+
+test("a 401 says what key the function holds (length + fingerprint) without revealing it", async () => {
+  const key = "re_test_key_0123456789";
+  mockFetch(() => new Response('{"message":"API key is invalid"}', { status: 401 }));
+  const expectedFingerprint = createHash("sha256").update(key).digest("hex").slice(0, 8);
+  assert.equal(await keyFingerprint(key), expectedFingerprint);
+  await assert.rejects(createResendSender({ apiKey: key, from: "f" }).send(msg("a@b.co")), (e: unknown) => {
+    const text = (e as Error).message;
+    return text.includes("Resend 401") && text.includes("API key is invalid") && text.includes(`${key.length} chars`) && text.includes(expectedFingerprint) && !text.includes(key);
+  });
 });
 
 test("layout escapes user-supplied text everywhere and builds a plain-text twin", () => {

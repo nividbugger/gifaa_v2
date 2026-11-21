@@ -12,6 +12,7 @@ import RegistryCrossLinks from "@/components/landing/RegistryCrossLinks";
 import Footer from "@/components/layout/Footer";
 import RevealWrapper from "@/components/layout/RevealWrapper";
 import { homepageFaqs } from "@/lib/faqs";
+import SantaPromo from "@/features/secret-santa/components/SantaPromo"; // seasonal: remove with features/secret-santa
 
 // Existing WebApplication schema — retained per the SEO brief.
 const webApplicationJsonLd = {
@@ -100,6 +101,7 @@ export default function HomePage() {
       <Header />
       <main>
         <HeroSection />
+        <SantaPromo className="container mx-auto px-6 pt-6" />
         <RevealWrapper delay={0}>
           <HowItWorksSection />
         </RevealWrapper>

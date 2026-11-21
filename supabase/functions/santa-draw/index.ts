@@ -84,7 +84,7 @@ Deno.serve(async (request) => {
   }
 
   // Email is best-effort: the draw has already succeeded, and everyone can reveal via their link regardless.
-  const { sent: emailed, failed } = sender.configured
+  const email = sender.configured
     ? await sendBatch(
         sender,
         participants.map((p) =>
@@ -98,7 +98,14 @@ Deno.serve(async (request) => {
           })
         )
       )
-    : { sent: 0, failed: 0 };
+    : { sent: 0, failed: 0, errors: [] as string[] };
 
-  return json({ ok: true, emailConfigured: sender.configured, emailed, failed, participants: participants.length });
+  return json({
+    ok: true,
+    emailConfigured: sender.configured,
+    emailed: email.sent,
+    failed: email.failed,
+    emailErrors: email.errors,
+    participants: participants.length,
+  });
 });

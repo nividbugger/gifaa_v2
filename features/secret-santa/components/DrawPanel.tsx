@@ -18,11 +18,16 @@ interface Props {
   onDone: () => void;
 }
 
-function summarise(result: DrawResult): string {
-  if (!result.emailConfigured) return "Names drawn! Email isn't set up yet, so ask everyone to open their personal link (they got it when they joined).";
-  return result.failed
-    ? `Names drawn! Emailed ${result.emailed} of ${result.participants}; ${result.failed} didn't send.`
-    : `Names drawn! Everyone has been emailed their personal link.`;
+type Outcome = { message: string; ok: boolean };
+
+/** Plain-language result of sending the emails, including the reason when something failed. */
+function emailOutcome(result: DrawResult, prefix: string): Outcome {
+  if (!result.emailConfigured) {
+    return { ok: false, message: `${prefix} Email isn't set up yet, so ask everyone to open their personal link (they got it when they joined).` };
+  }
+  if (result.failed === 0) return { ok: true, message: `${prefix} Everyone has been emailed their personal link.` };
+  const reason = result.emailErrors?.[0] ? ` Reason: ${result.emailErrors[0]}` : "";
+  return { ok: false, message: `${prefix} Emailed ${result.emailed} of ${result.participants}; ${result.failed} didn't send.${reason}` };
 }
 
 export default function DrawPanel({ group, participantCount, onDone }: Props) {
@@ -33,7 +38,9 @@ export default function DrawPanel({ group, participantCount, onDone }: Props) {
     setIsWorking(true);
     try {
       const result = await runOrganizerAction(group.id, action);
-      toast.success(action === "draw" ? summarise(result) : `Emails sent to ${result.emailed} people.`);
+      const outcome = emailOutcome(result, action === "draw" ? "Names drawn!" : "Done.");
+      if (outcome.ok) toast.success(outcome.message);
+      else toast.warning(outcome.message, { duration: 12000 });
       onDone();
     } catch (e) {
       toast.error(friendlyError(e));

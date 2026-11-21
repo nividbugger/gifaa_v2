@@ -57,6 +57,8 @@ export interface DrawResult {
   emailConfigured: boolean;
   emailed: number;
   failed: number;
+  /** Why sends failed (distinct, up to 3), e.g. "Resend 403: domain not verified". */
+  emailErrors?: string[];
   participants: number;
 }
 

@@ -101,7 +101,7 @@ export default function HomePage() {
       <Header />
       <main>
         <HeroSection />
-        <SantaPromo className="container mx-auto px-6 pt-6" />
+        <SantaPromo variant="bold" className="container mx-auto max-w-6xl px-6 pb-4 pt-6" />
         <RevealWrapper delay={0}>
           <HowItWorksSection />
         </RevealWrapper>

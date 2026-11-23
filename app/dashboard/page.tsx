@@ -162,7 +162,7 @@ export default function DashboardPage() {
             <p className="text-charcoal-light text-lg">Manage your gift registries and track contributions</p>
           </div>
 
-          <SantaPromo className="mb-8" />
+          <SantaPromo variant="slim" className="mb-8" />
 
           <div className="mb-8">
             <Link href="/create-registry">

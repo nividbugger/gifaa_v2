@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { addExclusion, friendlyError, removeExclusion } from "../api";
 import type { SantaExclusion, SantaParticipant } from "../types";
 
@@ -15,7 +14,7 @@ interface Props {
   onChange: () => void;
 }
 
-const selectClass = "h-10 flex-1 min-w-0 rounded-md border border-input bg-white px-3 text-sm";
+const selectClass = "h-11 flex-1 min-w-[130px] rounded-xl border border-input bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold";
 
 /** "Don't match these two" — typically couples or siblings who already exchange gifts. */
 export default function ExclusionsEditor({ groupId, participants, exclusions, disabled, onChange }: Props) {
@@ -45,9 +44,9 @@ export default function ExclusionsEditor({ groupId, participants, exclusions, di
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-charcoal-light">Optional. Keep two people from drawing each other, like a couple.</p>
+      <p className="text-sm text-charcoal-light">Optional. Keep two people from drawing each other, like a couple or siblings.</p>
       {exclusions.map((x) => (
-        <div key={`${x.participant_a}${x.participant_b}`} className="flex items-center justify-between rounded-lg bg-ivory-warm px-3 py-2 text-sm">
+        <div key={`${x.participant_a}${x.participant_b}`} className="flex items-center justify-between rounded-2xl bg-ivory-warm px-4 py-2.5 text-sm font-medium text-charcoal">
           <span>{nameOf(x.participant_a)} ↔ {nameOf(x.participant_b)}</span>
           {!disabled && (
             <button onClick={() => remove(x)} aria-label="Remove rule" className="p-1 text-charcoal-light hover:text-destructive"><X className="w-4 h-4" /></button>
@@ -64,7 +63,7 @@ export default function ExclusionsEditor({ groupId, participants, exclusions, di
             <option value="">can't draw…</option>
             {participants.filter((p) => p.id !== a).map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
           </select>
-          <Button variant="outline" onClick={add} disabled={!a || !b}>Add rule</Button>
+          <button type="button" onClick={add} disabled={!a || !b} className="h-11 rounded-full px-5 text-sm font-semibold text-royal ring-1 ring-gold/50 hover:bg-gold/10 disabled:opacity-40">Add rule</button>
         </div>
       )}
     </div>

@@ -12,10 +12,10 @@ interface Props {
 export default function WishCard({ wish, onRemove }: Props) {
   const showImage = wish.image_url && !isPlaceholderImage(wish.image_url);
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-gold/10 bg-ivory/60 p-3">
+    <div className="flex items-center gap-3 rounded-2xl border border-gold/15 bg-ivory/70 p-3">
       {showImage ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={wish.image_url!} alt="" className="w-14 h-14 rounded-lg object-cover shrink-0" />
+        <img src={wish.image_url!} alt="" className="h-14 w-14 shrink-0 rounded-xl object-cover" />
       ) : (
         <ProductImageFallback productUrl={wish.url} variant="thumb" />
       )}

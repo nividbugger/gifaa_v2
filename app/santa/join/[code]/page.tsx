@@ -4,14 +4,15 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { friendlyError, getGroupPreview, joinGroup } from "@/features/secret-santa/api";
-import { formatDate, formatInr } from "@/features/secret-santa/links";
 import { recallToken, rememberToken } from "@/features/secret-santa/token-store";
 import type { SantaGroupPreview } from "@/features/secret-santa/types";
+import GiftBox from "@/features/secret-santa/art/GiftBox";
+import InvitationCard from "@/features/secret-santa/components/InvitationCard";
+import SantaLoading from "@/features/secret-santa/components/SantaLoading";
 import SantaShell, { Panel } from "@/features/secret-santa/components/SantaShell";
 
 export default function JoinSantaGroupPage() {
@@ -61,57 +62,59 @@ export default function JoinSantaGroupPage() {
     }
   };
 
-  if (preview === undefined) {
-    return <SantaShell><div className="flex justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-royal" /></div></SantaShell>;
-  }
+  if (preview === undefined) return <SantaShell><SantaLoading text="Opening your invitation…" /></SantaShell>;
+
   if (preview === null) {
     return (
       <SantaShell>
-        <Panel>
-          <p className="text-charcoal">
-            {loadFailed ? "We couldn't load this invite just now. Please check your connection and try again." : "This invite link isn't valid. Ask the organiser to share it again."}
+        <Panel className="text-center">
+          <GiftBox tone="ivory" className="mx-auto h-20 w-20" />
+          <h1 className="mt-3 font-serif text-2xl font-bold text-royal">{loadFailed ? "We couldn't open this invite" : "This invite isn't valid"}</h1>
+          <p className="mt-2 text-charcoal-light">
+            {loadFailed ? "Please check your connection and try again." : "Ask the organiser to share the link again."}
           </p>
-          {loadFailed && <Button variant="outline" className="mt-3" onClick={() => window.location.reload()}>Try again</Button>}
+          {loadFailed && (
+            <button type="button" onClick={() => window.location.reload()} className="mt-5 rounded-full bg-royal px-6 py-3 text-sm font-semibold text-[#f6e6bd]">Try again</button>
+          )}
         </Panel>
       </SantaShell>
     );
   }
 
-  const details = [formatInr(preview.budget_amount) && `Budget ${formatInr(preview.budget_amount)}`, formatDate(preview.exchange_date)].filter(Boolean).join(" · ");
-
   return (
     <SantaShell>
       <div className="text-center">
-        <div className="text-5xl mb-2" aria-hidden>🎅</div>
-        <h1 className="text-2xl font-serif font-bold text-royal">{preview.name}</h1>
-        <p className="text-charcoal-light text-sm mt-1">
-          {preview.organizer_name ? `${preview.organizer_name} invited you` : "You're invited"} · {preview.participant_count} joined
-        </p>
-        {details && <p className="text-sm text-charcoal mt-1">{details}</p>}
-        {preview.note && <p className="text-sm text-charcoal-light mt-2 italic">“{preview.note}”</p>}
+        <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-gold">You're invited</p>
+        <p className="mt-1 font-serif text-lg text-charcoal-light">{preview.organizer_name ? `${preview.organizer_name} has a secret for you` : "A secret awaits"}</p>
       </div>
 
+      <InvitationCard name={preview.name} budget={preview.budget_amount} date={preview.exchange_date} note={preview.note} code={code} hostName={preview.organizer_name} joinedCount={preview.participant_count} showCountdown />
+
       {preview.status === "drawn" ? (
-        <Panel><p className="text-charcoal text-sm">The names have already been drawn for this group. If you joined earlier, open the personal link from your email.</p></Panel>
+        <Panel>
+          <p className="text-sm text-charcoal">The names have already been drawn for this group. If you joined earlier, open the personal link from your email.</p>
+        </Panel>
       ) : (
         <Panel>
+          <h2 className="mb-1 font-serif text-2xl font-semibold text-royal">Join the exchange</h2>
+          <p className="mb-5 text-sm text-charcoal-light">Takes ten seconds. No account needed.</p>
           <form onSubmit={submit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Your name *</Label>
-              <Input id="name" required maxLength={60} value={form.name} onChange={(e) => set({ name: e.target.value })} />
+              <Input id="name" required maxLength={60} autoComplete="name" value={form.name} onChange={(e) => set({ name: e.target.value })} className="h-12 rounded-xl" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email *</Label>
-              <Input id="email" type="email" required value={form.email} onChange={(e) => set({ email: e.target.value })} />
+              <Input id="email" type="email" required autoComplete="email" value={form.email} onChange={(e) => set({ email: e.target.value })} className="h-12 rounded-xl" />
               <p className="text-xs text-charcoal-light">We'll email your personal link when names are drawn. The organiser can see your name and email.</p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Mobile (optional)</Label>
-              <Input id="phone" type="tel" maxLength={20} value={form.phone} onChange={(e) => set({ phone: e.target.value })} />
+              <Input id="phone" type="tel" maxLength={20} autoComplete="tel" value={form.phone} onChange={(e) => set({ phone: e.target.value })} className="h-12 rounded-xl" />
             </div>
-            <Button type="submit" variant="royal" size="lg" className="w-full" disabled={isJoining}>
-              {isJoining ? <Loader2 className="w-4 h-4 animate-spin" /> : "Join Secret Santa"}
-            </Button>
+            <button type="submit" disabled={isJoining} className="flex w-full items-center justify-center gap-2 rounded-full bg-royal py-4 text-base font-semibold text-[#f6e6bd] shadow-lg transition-transform hover:-translate-y-0.5 disabled:opacity-50">
+              {isJoining ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Join Secret Santa <span aria-hidden>🎅</span></>}
+            </button>
           </form>
         </Panel>
       )}

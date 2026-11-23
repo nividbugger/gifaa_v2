@@ -6,7 +6,7 @@ names, and each person reveals only their own match. Matches are secret from eve
 ## Where everything lives
 | Piece | Location |
 |---|---|
-| UI, API client, config | `features/secret-santa/` |
+| UI, art, styles, API client, config | `features/secret-santa/` (`styles/santa.css` holds every `.santa-*` animation; `art/` the SVG illustrations; `components/` the screens) |
 | Pages | `app/santa/` (landing, new, manage/[id], join/[code], me/[token]) |
 | Database | `features/secret-santa/sql/up.sql` (tables/functions all prefixed `santa_`) |
 | Draw + email template (server side) | `supabase/functions/santa-draw/` (sending itself uses the shared `supabase/functions/_shared/email/`, which stays when Santa is removed) |
@@ -24,6 +24,12 @@ names, and each person reveals only their own match. Matches are secret from eve
 - Everything participants do goes through `SECURITY DEFINER` functions keyed by their private token.
 - `sql/verify.mjs` tries to break all of this on a real Postgres engine (`npm i --no-save @electric-sql/pglite && node features/secret-santa/sql/verify.mjs`).
 - Draw + template tests: `node --test supabase/functions/santa-draw/*.test.ts`.
+
+## Design notes
+- Visual identity: midnight blue, ivory and gold (Gifaa's palette), with playful SVG illustrations, falling snow, an envelope-and-gift reveal and confetti. All motion respects `prefers-reduced-motion`.
+- Each group gets one of five covers chosen from its invite code (`covers.ts`), so nothing extra is stored.
+- Pure logic with tests: `covers.ts`, `countdown.ts`, `invite-input.ts`, `avatar.ts` (`helpers.test.ts`).
+- `tailwind.config.ts` must list `./features/**/*` in `content`, otherwise classes used only here are never generated.
 
 ## Hiding it after New Year
 - The promos hide themselves after `SANTA_PROMO_UNTIL` in `config.ts` (6 Jan 2027). Nothing to deploy.
